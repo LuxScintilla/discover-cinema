@@ -1,0 +1,23 @@
+{
+  "name": "discover-cinema",
+  "version": "1.0.0",
+  "description": "",
+  "default": "index.html",
+  "scripts": {
+    "netlify": "./node_modules/.bin/netlify",
+    "start": "parcel index.html",
+    "start:all": "npm run netlify dev && npm run start",
+    "build": "parcel build index.html --dist-dir ./dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.11.0",
+    "netlify-cli": "^17.16.1",
+    "parcel": "^2.11.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.7"
+  }
+}

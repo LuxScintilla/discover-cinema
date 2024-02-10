@@ -1,0 +1,79 @@
+.nav {
+  display: flex;
+
+  &__title {
+    align-self: center;
+    font-size: 2.4rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: #fff;
+    margin-right: auto;
+  }
+
+  &__link {
+    all: unset;
+    font-weight: 700;
+    text-decoration: none;
+    color: #fff;
+    padding: 2rem 2rem;
+    transition: background-color 0.2s ease-in;
+    cursor: pointer;
+
+    &:active,
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  &__dropdown.active > &__link {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  &__dropdown {
+    position: relative;
+  }
+
+  &__dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 2rem;
+
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(2rem);
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+
+  &__dropdown.active > &__link + &__dropdown-menu {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown {
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(6, 12rem);
+  }
+
+  &__link {
+    display: inline-block;
+    padding: 1rem;
+    text-decoration: none;
+    color: #fff;
+    transition: background-color 0.2s ease-in;
+    cursor: pointer;
+
+    &:active,
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+  }
+}
+
+.fa-solid {
+  margin-left: 0.4rem;
+}
