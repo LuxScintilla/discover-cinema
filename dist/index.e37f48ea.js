@@ -142,13 +142,13 @@
       this[globalName] = mainExports;
     }
   }
-})({"lHQeq":[function(require,module,exports) {
+})({"f0HGD":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "0907ca6d3464ddca";
+module.bundle.HMR_BUNDLE_ID = "d113fd8ce37f48ea";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -578,8 +578,143 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
     });
 }
 
-},{}],"j4kuM":[function(require,module,exports) {
+},{}],"aenu9":[function(require,module,exports) {
+var _modelJs = require("./model.js");
+var _viewJs = require("./view.js");
+// --------- LOAD INITIAL FEATURED TRENDING FROM API BY RANDOM ---------
+const loadInitial = async function() {
+    try {
+        const data = await _modelJs.getTrendingMovies();
+        _viewJs.viewHome(data);
+    } catch (error) {
+        console.log(error);
+    }
+};
+loadInitial();
 
-},{}]},["lHQeq","j4kuM"], "j4kuM", "parcelRequireeee6")
+},{"./model.js":"Y4A21","./view.js":"ky8MP"}],"Y4A21":[function(require,module,exports) {
+// fetch(`/.netlify/functions/fetch-movie?query=${mySearch}`).then((response) =>
+//   console.log(response.json())
+// );
+// fetch(`/.netlify/functions/fetch-movie`).then((response) =>
+//   console.log(response.json())
+// );
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getTrendingMovies", ()=>getTrendingMovies);
+const getTrendingMovies = async function() {
+    try {
+        const response = await fetch(`/.netlify/functions/fetch-movie`);
+        const movies = await response.json();
+        const data = movies.results;
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
-//# sourceMappingURL=discover-cinema.3464ddca.js.map
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"ky8MP":[function(require,module,exports) {
+// --------- DROPDOWN MENU ---------
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "viewHome", ()=>viewHome);
+document.addEventListener("click", (e)=>{
+    const isDropdownButton = e.target.matches("[data-dropdown-button]");
+    const caret = document.querySelector(".fa-caret-down");
+    if (!isDropdownButton && e.target.closest("[data-dropdown]") != null) return;
+    let currentDropdown;
+    if (isDropdownButton) {
+        currentDropdown = e.target.closest("[data-dropdown]");
+        currentDropdown.classList.toggle("active");
+        caret.classList.toggle("fa-caret-down__rotate");
+    }
+    document.querySelectorAll("[data-dropdown].active").forEach((dropdown)=>{
+        if (dropdown === currentDropdown) return;
+        dropdown.classList.remove("active");
+        caret.classList.remove("fa-caret-down__rotate");
+    });
+});
+// --------- GENRE ID FROM API ---------
+const genreID = {
+    action: 28,
+    adventure: 12,
+    animation: 16,
+    comedy: 35,
+    crime: 80,
+    documentary: 99,
+    drama: 18,
+    family: 10751,
+    fantasy: 14,
+    history: 36,
+    horror: 27,
+    music: 10402,
+    mystery: 9648,
+    romance: 10749,
+    science_fiction: 878,
+    tv_movie: 10770,
+    thriller: 53,
+    war: 10752,
+    western: 37
+};
+// --------- HELPER FUNCTIONS ---------
+const firstLetterCapitalize = function(word) {
+    const firstLetter = word.charAt(0).toUpperCase();
+    const remaining = word.slice(1);
+    return `${firstLetter}${remaining}`;
+};
+const viewHome = function(data) {
+    const featuredTitle = document.querySelector(".featured__title");
+    const featuredDate = document.querySelector(".featured__date");
+    const featuredGenre = document.querySelector(".featured__genre");
+    const featuredOverview = document.querySelector(".featured__overview");
+    const random = Math.floor(Math.random() * 20);
+    const randomSelectedMovie = data[random];
+    const imgPath = "https://image.tmdb.org/t/p/original";
+    const genre = randomSelectedMovie.genre_ids.map((id)=>{
+        for (const [key, value] of Object.entries(genreID))if (id === value) {
+            if (key.includes("_")) {
+                const split = key.split("_");
+                return split.map((word)=>firstLetterCapitalize(word)).join(" ");
+            } else return firstLetterCapitalize(key);
+        }
+    }).join(", ");
+    document.body.style.backgroundImage = `linear-gradient(to bottom right, rgba(13, 16, 24, 0.8), rgba(0, 0, 0, 0.9)), url(${imgPath}${randomSelectedMovie.backdrop_path})`;
+    featuredTitle.textContent = randomSelectedMovie.title;
+    featuredDate.textContent = randomSelectedMovie.release_date.slice(0, 4);
+    featuredGenre.textContent = genre;
+    featuredOverview.textContent = randomSelectedMovie.overview;
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f0HGD","aenu9"], "aenu9", "parcelRequireeee6")
+
+//# sourceMappingURL=index.e37f48ea.js.map
