@@ -13,7 +13,7 @@ html {
 }
 
 body {
-  color: #fff;
+  color: #e7e7e8;
   background-color: #0d1018;
   background-position: center;
   background-repeat: no-repeat;
@@ -23,9 +23,22 @@ body {
   font-size: 1.4rem;
 }
 
+.main {
+  flex-direction: column;
+  justify-content: center;
+  height: calc(100vh - 56px);
+  display: flex;
+}
+
 .container {
   max-width: calc(100% - 10vw);
   margin: 0 auto;
+}
+
+.container:has(.featured) {
+  align-items: center;
+  gap: 8rem;
+  display: flex;
 }
 
 .nav {
@@ -81,6 +94,32 @@ body {
   transform: translateY(0);
 }
 
+.nav__search {
+  align-self: center;
+}
+
+.nav__search-btn {
+  all: unset;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 1rem;
+  transition: background-color .2s ease-in-out;
+}
+
+.nav__search-btn:active, .nav__search-btn:hover {
+  background-color: #e02d00;
+}
+
+.nav__input {
+  all: unset;
+  background-color: #0009;
+  padding: 1rem;
+}
+
+.nav__input:focus {
+  border-bottom: 1px solid #e7e7e8;
+}
+
 .dropdown__grid {
   grid-template-columns: repeat(6, 12rem);
   display: grid;
@@ -99,8 +138,66 @@ body {
   background-color: #0009;
 }
 
-.fa-solid {
+.fa-caret-down {
   margin-left: .4rem;
+  transition: transform .2s ease-in;
+}
+
+.fa-caret-down__rotate {
+  transform: rotate(180deg);
+}
+
+.featured__title {
+  color: #e7e7e8;
+  margin-bottom: .4rem;
+  font-size: 3.2rem;
+}
+
+.featured__info {
+  gap: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+}
+
+.featured__date, .featured__genre {
+  color: #b6b7ba;
+  opacity: .6;
+  font-size: 1.8rem;
+  font-weight: 400;
+}
+
+.featured__overview {
+  color: #cfcfd1;
+  margin-bottom: 2rem;
+}
+
+.featured__watch, .featured__list {
+  all: unset;
+  border-radius: 4px;
+  padding: 1rem 2rem;
+}
+
+.featured__watch {
+  cursor: pointer;
+  background-color: #e02d00;
+  margin-right: 2rem;
+  transition: all .2s ease-in-out;
+}
+
+.featured__watch:active, .featured__watch:hover {
+  background-color: #ff582e;
+  box-shadow: 0 0 8px 4px #0006;
+}
+
+.featured__list {
+  cursor: pointer;
+  background-color: #0009;
+  transition: all .2s ease-in-out;
+}
+
+.featured__list:active, .featured__list:hover {
+  background-color: #000;
+  box-shadow: 0 0 8px 4px #0006;
 }
 
 /*# sourceMappingURL=index.f7626f62.css.map */

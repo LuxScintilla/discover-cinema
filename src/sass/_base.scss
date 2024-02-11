@@ -1,3 +1,11 @@
+$color-background: #0d1018;
+$color-text-light: #e7e7e8;
+$color-text-medium: #cfcfd1;
+$color-text-dark: #b6b7ba;
+
+$color-accent: #e02d00;
+$color-accent-hover: #ff582e;
+
 * {
   margin: 0;
   padding: 0;
@@ -16,16 +24,30 @@ html {
 
 body {
   height: 100vh;
-  background-color: #0d1018;
+  background-color: $color-background;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   font-family: sans-serif;
   font-size: 1.4rem;
-  color: #fff;
+  color: $color-text-light;
+}
+
+.main {
+  height: calc(100vh - 56px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .container {
   max-width: calc(100% - 10vw);
   margin: 0 auto;
+}
+
+.container:has(.featured) {
+  display: flex;
+  align-items: center;
+  gap: 8rem;
+  align-items: center;
 }

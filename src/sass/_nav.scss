@@ -51,6 +51,33 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+  &__search {
+    align-self: center;
+  }
+
+  &__search-btn {
+    all: unset;
+    padding: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+
+    &:active,
+    &:hover {
+      background-color: $color-accent;
+    }
+  }
+
+  &__input {
+    all: unset;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 1rem;
+
+    &:focus {
+      border-bottom: 1px solid $color-text-light;
+    }
+  }
 }
 
 .dropdown {
@@ -74,6 +101,11 @@
   }
 }
 
-.fa-solid {
+.fa-caret-down {
   margin-left: 0.4rem;
+  transition: transform 0.2s ease-in;
+
+  &__rotate {
+    transform: rotate(180deg);
+  }
 }
