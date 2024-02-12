@@ -7,6 +7,7 @@ const loadInitial = async function () {
   try {
     const data = await model.getTrendingMovies();
     view.viewHome(data);
+    view.populateSlider(data);
   } catch (error) {
     console.log(error);
   }

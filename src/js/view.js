@@ -90,3 +90,25 @@ export const viewHome = function (data) {
   featuredGenre.textContent = genre;
   featuredOverview.textContent = randomSelectedMovie.overview;
 };
+
+// --------- HOME PAGE SLIDER ---------
+
+export const populateSlider = function (data) {
+  const slider = document.querySelector(".splide__list");
+  const imgPath = "https://image.tmdb.org/t/p/original";
+
+  slider.innerHTML = "";
+
+  data.forEach((movie) => {
+    const newLI = document.createElement("li");
+    newLI.classList.add("splide__slide");
+
+    const newImg = document.createElement("img");
+    newImg.classList.add("slider__img");
+    newImg.dataset.title = movie.original_title;
+    newImg.src = `${imgPath}${movie.poster_path}`;
+
+    newLI.appendChild(newImg);
+    slider.appendChild(newLI);
+  });
+};
