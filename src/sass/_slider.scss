@@ -1,0 +1,13 @@
+.swiper {
+  width: 100%;
+
+  &-img {
+    max-height: 32rem;
+    cursor: pointer;
+  }
+
+  &-button-prev,
+  &-button-next {
+    --swiper-theme-color: #fff;
+  }
+}

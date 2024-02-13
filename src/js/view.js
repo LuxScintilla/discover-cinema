@@ -94,21 +94,80 @@ export const viewHome = function (data) {
 // --------- HOME PAGE SLIDER ---------
 
 export const populateSlider = function (data) {
-  const slider = document.querySelector(".splide__list");
+  const slider = document.querySelector(".swiper-wrapper");
   const imgPath = "https://image.tmdb.org/t/p/original";
 
   slider.innerHTML = "";
 
   data.forEach((movie) => {
-    const newLI = document.createElement("li");
-    newLI.classList.add("splide__slide");
+    const newDIV = document.createElement("div");
+    newDIV.classList.add("swiper-slide");
 
     const newImg = document.createElement("img");
-    newImg.classList.add("slider__img");
+    newImg.classList.add("swiper-img");
     newImg.dataset.title = movie.original_title;
     newImg.src = `${imgPath}${movie.poster_path}`;
 
-    newLI.appendChild(newImg);
-    slider.appendChild(newLI);
+    newDIV.appendChild(newImg);
+    slider.appendChild(newDIV);
+  });
+
+  // SWIPER ------------------------------
+
+  const swiper = new Swiper(".swiper", {
+    // Optional parameters
+    direction: "horizontal",
+    loop: true,
+
+    autoplay: {
+      delay: 5000,
+      pauseOnMouseEnter: "true",
+    },
+
+    mousewheel: {
+      invert: true,
+    },
+
+    keyboard: {
+      enabled: true,
+    },
+
+    // Navigation arrows
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+
+    // Default parameters
+    slidesPerView: 1,
+    spaceBetween: 10,
+    // Responsive breakpoints
+    breakpoints: {
+      // when window width is >= 460px
+      460: {
+        slidesPerView: 2,
+        spaceBetween: 10,
+      },
+      // when window width is >= 720px
+      720: {
+        slidesPerView: 3,
+        spaceBetween: 10,
+      },
+      // when window width is >= 1000px
+      1000: {
+        slidesPerView: 4,
+        spaceBetween: 20,
+      },
+      // when window width is >= 1400px
+      1400: {
+        slidesPerView: 4,
+        spaceBetween: 30,
+      },
+      // when window width is >= 1700px
+      1700: {
+        slidesPerView: 5,
+        spaceBetween: 40,
+      },
+    },
   });
 };
