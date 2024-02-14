@@ -171,3 +171,13 @@ export const populateSlider = function (data) {
     },
   });
 };
+
+// --------- MOBILE MENU HAMBURGER ---------
+
+const hamburgerMenu = document.querySelector(".mobile-menu__hamburger");
+const mobileMenu = document.querySelector(".mobile-menu__off-screen");
+
+hamburgerMenu.addEventListener("click", function () {
+  hamburgerMenu.classList.toggle("active");
+  mobileMenu.classList.toggle("active");
+});

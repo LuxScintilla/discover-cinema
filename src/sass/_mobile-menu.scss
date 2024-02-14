@@ -1,0 +1,119 @@
+.mobile-menu {
+  &__off-screen {
+    position: fixed;
+    z-index: 999;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-background;
+    height: 100lvh;
+    // width: 100%;
+    padding: 2rem;
+    right: -1000px;
+    visibility: hidden;
+  }
+
+  &__off-screen.active {
+    right: 0;
+    visibility: visible;
+  }
+
+  &__section-title {
+    margin-bottom: 1rem;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+  }
+
+  &__item:last-of-type {
+    margin-top: 4rem;
+  }
+
+  &__genre-list {
+    list-style-type: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2rem;
+  }
+
+  &__link,
+  &__genre-link {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease-in-out;
+
+    &:active,
+    &:hover {
+      color: $color-accent;
+    }
+  }
+
+  &__search {
+    margin-top: 4rem;
+  }
+
+  &__search-btn {
+    all: unset;
+    padding: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+
+    &:active,
+    &:hover {
+      background-color: $color-accent;
+    }
+  }
+
+  &__hamburger {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0;
+    height: 4rem;
+    width: 4rem;
+    margin-left: auto;
+
+    span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      height: 4px;
+      width: 100%;
+      background-color: $color-text-light;
+      border-radius: 4px;
+      transition: all 0.2s ease-in-out;
+
+      &:nth-child(1) {
+        top: 25%;
+      }
+
+      &:nth-child(3) {
+        top: 75%;
+      }
+    }
+  }
+
+  &__hamburger.active {
+    span {
+      &:nth-child(1) {
+        top: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+      &:nth-child(2) {
+        opacity: 0;
+      }
+      &:nth-child(3) {
+        top: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+    }
+  }
+}

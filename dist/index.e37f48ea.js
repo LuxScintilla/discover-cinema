@@ -783,6 +783,13 @@ const populateSlider = function(data) {
         }
     });
 };
+// --------- MOBILE MENU HAMBURGER ---------
+const hamburgerMenu = document.querySelector(".mobile-menu__hamburger");
+const mobileMenu = document.querySelector(".mobile-menu__off-screen");
+hamburgerMenu.addEventListener("click", function() {
+    hamburgerMenu.classList.toggle("active");
+    mobileMenu.classList.toggle("active");
+});
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f0HGD","aenu9"], "aenu9", "parcelRequireeee6")
 
