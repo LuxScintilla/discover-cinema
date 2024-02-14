@@ -30,7 +30,7 @@
   }
 
   &__dropdown.active > &__link {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.8);
   }
 
   &__dropdown {
@@ -42,7 +42,7 @@
     position: absolute;
     right: 0;
     top: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 2rem;
 
     pointer-events: none;

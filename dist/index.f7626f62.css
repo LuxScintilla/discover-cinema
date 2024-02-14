@@ -39,7 +39,7 @@ body {
 .container:has(.featured) {
   grid-template-columns: 1fr 2fr;
   align-content: center;
-  gap: 2rem;
+  gap: 4rem 2rem;
   display: grid;
 }
 
@@ -48,6 +48,11 @@ body {
     grid-template-columns: 1fr;
     display: grid;
   }
+}
+
+.container:has(.mobile-menu__hamburger) {
+  justify-content: space-between;
+  display: flex;
 }
 
 .nav {
@@ -84,7 +89,7 @@ body {
 }
 
 .nav__dropdown.active > .nav__link {
-  background-color: #0009;
+  background-color: #000c;
 }
 
 .nav__dropdown {
@@ -95,7 +100,7 @@ body {
 .nav__dropdown-menu {
   pointer-events: none;
   opacity: 0;
-  background-color: #0009;
+  background-color: #000c;
   padding: 2rem;
   transition: opacity .2s ease-in-out, transform .2s ease-in-out;
   position: absolute;
@@ -231,16 +236,19 @@ body {
 }
 
 .mobile-menu__off-screen {
-  z-index: 999;
+  z-index: 900;
   visibility: hidden;
   background-color: #0d1018;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
   height: 100lvh;
   padding: 2rem;
+  transition: all .4s ease-in-out;
   display: flex;
   position: fixed;
+  top: 0;
   right: -1000px;
 }
 
@@ -249,29 +257,48 @@ body {
   right: 0;
 }
 
+.mobile-menu__title {
+  color: #fff;
+  align-self: center;
+  margin-right: auto;
+  font-size: 2.4rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: none;
+}
+
+@media (width < 840px) {
+  .mobile-menu__title {
+    display: block;
+  }
+}
+
 .mobile-menu__section-title {
   margin-bottom: 1rem;
+  font-size: 3.2rem;
 }
 
 .mobile-menu__list {
   flex-direction: column;
+  row-gap: 1rem;
   list-style-type: none;
   display: flex;
 }
 
 .mobile-menu__item:last-of-type {
-  margin-top: 4rem;
+  margin-top: 6rem;
 }
 
 .mobile-menu__genre-list {
   grid-template-columns: 1fr 1fr;
-  column-gap: 2rem;
+  gap: 1rem 2rem;
   list-style-type: none;
   display: grid;
 }
 
 .mobile-menu__link, .mobile-menu__genre-link {
   color: inherit;
+  font-size: 2rem;
   text-decoration: none;
   transition: color .2s ease-in-out;
 }
@@ -296,14 +323,32 @@ body {
   background-color: #e02d00;
 }
 
+.mobile-menu__input {
+  all: unset;
+  background-color: #0009;
+  width: 22rem;
+  padding: 1rem;
+}
+
+.mobile-menu__input:focus {
+  border-bottom: 1px solid #e7e7e8;
+}
+
 .mobile-menu__hamburger {
+  cursor: pointer;
+  z-index: 999;
   flex-direction: column;
   width: 4rem;
   height: 4rem;
-  margin-left: auto;
   padding: 1rem 0;
-  display: flex;
+  display: none;
   position: relative;
+}
+
+@media (width < 840px) {
+  .mobile-menu__hamburger {
+    display: block;
+  }
 }
 
 .mobile-menu__hamburger span {

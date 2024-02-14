@@ -51,9 +51,15 @@ body {
   grid-template-columns: 1fr 2fr;
   align-content: center;
   gap: 2rem;
+  row-gap: 4rem;
 
   @media (max-width: 1200px) {
     display: grid;
     grid-template-columns: 1fr;
   }
+}
+
+.container:has(.mobile-menu__hamburger) {
+  display: flex;
+  justify-content: space-between;
 }
