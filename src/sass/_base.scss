@@ -41,6 +41,10 @@ body {
   padding: 2rem 0;
 }
 
+.main.active {
+  position: fixed;
+}
+
 .container {
   max-width: calc(100% - 10vw);
   margin: 0 auto;

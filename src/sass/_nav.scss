@@ -38,6 +38,10 @@
     z-index: 999;
   }
 
+  &__dropdown > button > * {
+    pointer-events: none;
+  }
+
   &__dropdown-menu {
     position: absolute;
     right: 0;

@@ -3,16 +3,17 @@
     position: fixed;
     z-index: 900;
 
+    overflow-y: scroll;
+
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     background-color: $color-background;
-    height: 100lvh;
+    top: 0;
+    bottom: 0;
+    right: -1000px;
     width: 100%;
     padding: 2rem;
-    top: 0;
-    right: -1000px;
     visibility: hidden;
     transition: all 0.4s ease-in-out;
   }
@@ -20,6 +21,11 @@
   &__off-screen.active {
     right: 0;
     visibility: visible;
+
+    @media (width > 840px) {
+      right: -1000px;
+      visibility: hidden;
+    }
   }
 
   &__title {

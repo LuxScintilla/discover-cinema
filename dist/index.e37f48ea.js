@@ -591,7 +591,14 @@ const loadInitial = async function() {
         console.log(error);
     }
 };
-loadInitial();
+const loadGenre = function(query) {
+    _modelJs.searchMovies(query);
+};
+const init = function() {
+    loadInitial();
+    _viewJs.genreHandler(loadGenre);
+};
+init();
 
 },{"./model.js":"Y4A21","./view.js":"ky8MP"}],"Y4A21":[function(require,module,exports) {
 // fetch(`/.netlify/functions/fetch-movie?query=${mySearch}`).then((response) =>
@@ -600,15 +607,36 @@ loadInitial();
 // fetch(`/.netlify/functions/fetch-movie`).then((response) =>
 //   console.log(response.json())
 // );
+// https://api.themoviedb.org/3/discover/movie?api_key=###&with_genres=28
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "trendingArray", ()=>trendingArray);
+parcelHelpers.export(exports, "searchArray", ()=>searchArray);
+parcelHelpers.export(exports, "watchlistArray", ()=>watchlistArray);
 parcelHelpers.export(exports, "getTrendingMovies", ()=>getTrendingMovies);
+parcelHelpers.export(exports, "searchMovies", ()=>searchMovies);
+const trendingArray = [];
+const searchArray = [];
+const watchlistArray = [];
 const getTrendingMovies = async function() {
     try {
         const response = await fetch(`/.netlify/functions/fetch-movie`);
         const movies = await response.json();
         const data = movies.results;
+        data.forEach((item)=>{
+            trendingArray.push(item);
+        });
+        console.log(trendingArray);
         return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+const searchMovies = async function(query) {
+    try {
+        const response = await fetch(`/.netlify/functions/fetch-movie?with_genres=${query}`);
+        const movies = await response.json();
+        console.log(movies);
     } catch (error) {
         console.log(error);
     }
@@ -650,6 +678,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "viewHome", ()=>viewHome);
 parcelHelpers.export(exports, "populateSlider", ()=>populateSlider);
+parcelHelpers.export(exports, "genreHandler", ()=>genreHandler);
 document.addEventListener("click", (e)=>{
     const isDropdownButton = e.target.matches("[data-dropdown-button]");
     const caret = document.querySelector(".fa-caret-down");
@@ -784,12 +813,25 @@ const populateSlider = function(data) {
     });
 };
 // --------- MOBILE MENU HAMBURGER ---------
+const main = document.querySelector(".main");
 const hamburgerMenu = document.querySelector(".mobile-menu__hamburger");
 const mobileMenu = document.querySelector(".mobile-menu__off-screen");
 hamburgerMenu.addEventListener("click", function() {
+    main.classList.toggle("active");
     hamburgerMenu.classList.toggle("active");
     mobileMenu.classList.toggle("active");
 });
+// --------- GENRE DOM RENDER ---------
+const dropdownLink = document.querySelectorAll(".dropdown__link");
+const genreHandler = function(handler) {
+    dropdownLink.forEach((link)=>{
+        link.addEventListener("click", function(e) {
+            const query = e.target.dataset.genre;
+            console.log(query, genreID[query]);
+            handler(genreID[query]);
+        });
+    });
+};
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f0HGD","aenu9"], "aenu9", "parcelRequireeee6")
 

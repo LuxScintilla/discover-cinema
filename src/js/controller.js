@@ -13,4 +13,13 @@ const loadInitial = async function () {
   }
 };
 
-loadInitial();
+const loadGenre = function (query) {
+  model.searchMovies(query);
+};
+
+const init = function () {
+  loadInitial();
+  view.genreHandler(loadGenre);
+};
+
+init();

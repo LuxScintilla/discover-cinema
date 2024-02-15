@@ -174,10 +174,26 @@ export const populateSlider = function (data) {
 
 // --------- MOBILE MENU HAMBURGER ---------
 
+const main = document.querySelector(".main");
 const hamburgerMenu = document.querySelector(".mobile-menu__hamburger");
 const mobileMenu = document.querySelector(".mobile-menu__off-screen");
 
 hamburgerMenu.addEventListener("click", function () {
+  main.classList.toggle("active");
   hamburgerMenu.classList.toggle("active");
   mobileMenu.classList.toggle("active");
 });
+
+// --------- GENRE DOM RENDER ---------
+
+const dropdownLink = document.querySelectorAll(".dropdown__link");
+
+export const genreHandler = function (handler) {
+  dropdownLink.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      const query = e.target.dataset.genre;
+      console.log(query, genreID[query]);
+      handler(genreID[query]);
+    });
+  });
+};
