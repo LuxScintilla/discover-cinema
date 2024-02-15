@@ -37,7 +37,9 @@ export const searchMovies = async function (query) {
     );
     const movies = await response.json();
 
-    console.log(movies);
+    console.log(movies.results);
+
+    return movies.results;
   } catch (error) {
     console.log(error);
   }

@@ -3,11 +3,12 @@ const axios = require("axios");
 const handler = async (event) => {
   const API_KEY = process.env.API_KEY;
   const { query } = event.queryStringParameters;
+  const { with_genres } = event.queryStringParameters;
   let URL;
-  if (event.queryStringParameters.query) {
+  if (query) {
     URL = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`;
-  } else if (event.queryStringParameters.with_genres) {
-    URL = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${query}`;
+  } else if (with_genres) {
+    URL = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${with_genres}`;
   } else {
     URL = `https://api.themoviedb.org/3/trending/movie/day?language=en-US&api_key=${API_KEY}`;
   }

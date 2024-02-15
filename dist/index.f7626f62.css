@@ -59,6 +59,11 @@ body {
   display: flex;
 }
 
+.grid {
+  grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+  gap: 2rem;
+}
+
 .nav {
   display: flex;
 }

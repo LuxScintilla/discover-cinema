@@ -186,6 +186,33 @@ hamburgerMenu.addEventListener("click", function () {
 
 // --------- GENRE DOM RENDER ---------
 
+export const renderGenre = function (result) {
+  const main = document.querySelector(".main");
+  const imgPath = "https://image.tmdb.org/t/p/original";
+
+  // create elemts to display the movie results and attach  to main
+  const container = document.createElement("div");
+  container.classList.add("container");
+
+  const movieGrid = document.createElement("div");
+  movieGrid.classList.add("grid");
+
+  result.forEach((movie) => {
+    const movieGridItem = document.createElement("div");
+    movieGridItem.classList.add("movie-grid__item");
+
+    const movieGridIMG = document.createElement("img");
+    movieGridIMG.classList.add("movie-grid__img");
+    movieGridIMG.src = `${imgPath}${movie.poster_path}`;
+
+    movieGridItem.appendChild(movieGridIMG);
+    movieGrid.appendChild(movieGridItem);
+    container.appendChild(movieGrid);
+  });
+  main.innerHTML = "";
+  main.appendChild(container);
+};
+
 const dropdownLink = document.querySelectorAll(".dropdown__link");
 
 export const genreHandler = function (handler) {

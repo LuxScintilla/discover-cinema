@@ -592,7 +592,8 @@ const loadInitial = async function() {
     }
 };
 const loadGenre = function(query) {
-    _modelJs.searchMovies(query);
+    const result = _modelJs.searchMovies(query);
+    _viewJs.renderGenre(result);
 };
 const init = function() {
     loadInitial();
@@ -636,7 +637,8 @@ const searchMovies = async function(query) {
     try {
         const response = await fetch(`/.netlify/functions/fetch-movie?with_genres=${query}`);
         const movies = await response.json();
-        console.log(movies);
+        console.log(movies.results);
+        return movies.results;
     } catch (error) {
         console.log(error);
     }
@@ -678,6 +680,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "viewHome", ()=>viewHome);
 parcelHelpers.export(exports, "populateSlider", ()=>populateSlider);
+parcelHelpers.export(exports, "renderGenre", ()=>renderGenre);
 parcelHelpers.export(exports, "genreHandler", ()=>genreHandler);
 document.addEventListener("click", (e)=>{
     const isDropdownButton = e.target.matches("[data-dropdown-button]");
@@ -821,7 +824,27 @@ hamburgerMenu.addEventListener("click", function() {
     hamburgerMenu.classList.toggle("active");
     mobileMenu.classList.toggle("active");
 });
-// --------- GENRE DOM RENDER ---------
+const renderGenre = function(result) {
+    const main = document.querySelector(".main");
+    const imgPath = "https://image.tmdb.org/t/p/original";
+    // create elemts to display the movie results and attach  to main
+    const container = document.createElement("div");
+    container.classList.add("container");
+    const movieGrid = document.createElement("div");
+    movieGrid.classList.add("grid");
+    result.forEach((movie)=>{
+        const movieGridItem = document.createElement("div");
+        movieGridItem.classList.add("movie-grid__item");
+        const movieGridIMG = document.createElement("img");
+        movieGridIMG.classList.add("movie-grid__img");
+        movieGridIMG.src = `${imgPath}${movie.poster_path}`;
+        movieGridItem.appendChild(movieGridIMG);
+        movieGrid.appendChild(movieGridItem);
+        container.appendChild(movieGrid);
+    });
+    main.innerHTML = "";
+    main.appendChild(container);
+};
 const dropdownLink = document.querySelectorAll(".dropdown__link");
 const genreHandler = function(handler) {
     dropdownLink.forEach((link)=>{
