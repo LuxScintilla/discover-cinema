@@ -56,6 +56,19 @@ const firstLetterCapitalize = function (word) {
   return `${firstLetter}${remaining}`;
 };
 
+const convertKey2Title = function (id) {
+  for (const [key, value] of Object.entries(genreID)) {
+    if (id === value) {
+      if (key.includes("_")) {
+        const split = key.split("_");
+        return split.map((word) => firstLetterCapitalize(word)).join(" ");
+      } else {
+        return firstLetterCapitalize(key);
+      }
+    }
+  }
+};
+
 // --------- HOME PAGE ---------
 
 export const viewHome = function (data) {
@@ -90,6 +103,14 @@ export const viewHome = function (data) {
   featuredGenre.textContent = genre;
   featuredOverview.textContent = randomSelectedMovie.overview;
 };
+
+const navLogo = document.getElementById("nav-logo");
+const navHome = document.getElementById("nav-home");
+
+//IMPORTANT - You left off here - IMPORTANT !!!!!!!!!!!!!!!!!!!!
+//BROKEN - make some sort of handler to get the api data to the viewHome callback function
+navLogo.addEventListener("click", viewHome);
+navHome.addEventListener("click", viewHome);
 
 // --------- HOME PAGE SLIDER ---------
 
@@ -186,16 +207,19 @@ hamburgerMenu.addEventListener("click", function () {
 
 // --------- GENRE DOM RENDER ---------
 
-export const renderGenre = function (result) {
+export const renderGenre = async function (result, query) {
   const main = document.querySelector(".main");
   const imgPath = "https://image.tmdb.org/t/p/original";
 
-  // create elemts to display the movie results and attach  to main
   const container = document.createElement("div");
   container.classList.add("container");
+  container.classList.add("grid");
 
-  const movieGrid = document.createElement("div");
-  movieGrid.classList.add("grid");
+  const genreTitle = document.createElement("h2");
+  genreTitle.classList.add("movie-grid__title");
+  genreTitle.textContent = convertKey2Title(query);
+
+  container.appendChild(genreTitle);
 
   result.forEach((movie) => {
     const movieGridItem = document.createElement("div");
@@ -206,21 +230,25 @@ export const renderGenre = function (result) {
     movieGridIMG.src = `${imgPath}${movie.poster_path}`;
 
     movieGridItem.appendChild(movieGridIMG);
-    movieGrid.appendChild(movieGridItem);
-    container.appendChild(movieGrid);
+    container.appendChild(movieGridItem);
   });
   main.innerHTML = "";
   main.appendChild(container);
 };
 
-const dropdownLink = document.querySelectorAll(".dropdown__link");
-
 export const genreHandler = function (handler) {
+  const dropdownLink = document.querySelectorAll(".dropdown__link");
+
   dropdownLink.forEach((link) => {
     link.addEventListener("click", function (e) {
       const query = e.target.dataset.genre;
-      console.log(query, genreID[query]);
+
       handler(genreID[query]);
+
+      const dropDown = e.target.closest("[data-dropdown]");
+      const caret = document.querySelector(".fa-caret-down");
+      dropDown.classList.remove("active");
+      caret.classList.remove("fa-caret-down__rotate");
     });
   });
 };

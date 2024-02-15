@@ -22,24 +22,21 @@ export const getTrendingMovies = async function () {
       trendingArray.push(item);
     });
 
-    console.log(trendingArray);
-
     return data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const searchMovies = async function (query) {
+export const searchMoviesGenre = async function (query) {
   try {
     const response = await fetch(
       `/.netlify/functions/fetch-movie?with_genres=${query}`
     );
     const movies = await response.json();
+    const data = movies.results;
 
-    console.log(movies.results);
-
-    return movies.results;
+    return data;
   } catch (error) {
     console.log(error);
   }

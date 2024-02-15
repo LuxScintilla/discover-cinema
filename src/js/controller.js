@@ -13,9 +13,9 @@ const loadInitial = async function () {
   }
 };
 
-const loadGenre = function (query) {
-  const result = model.searchMovies(query);
-  view.renderGenre(result);
+const loadGenre = async function (query) {
+  const result = await model.searchMoviesGenre(query);
+  view.renderGenre(result, query);
 };
 
 const init = function () {

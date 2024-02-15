@@ -591,9 +591,9 @@ const loadInitial = async function() {
         console.log(error);
     }
 };
-const loadGenre = function(query) {
-    const result = _modelJs.searchMovies(query);
-    _viewJs.renderGenre(result);
+const loadGenre = async function(query) {
+    const result = await _modelJs.searchMoviesGenre(query);
+    _viewJs.renderGenre(result, query);
 };
 const init = function() {
     loadInitial();
@@ -615,7 +615,7 @@ parcelHelpers.export(exports, "trendingArray", ()=>trendingArray);
 parcelHelpers.export(exports, "searchArray", ()=>searchArray);
 parcelHelpers.export(exports, "watchlistArray", ()=>watchlistArray);
 parcelHelpers.export(exports, "getTrendingMovies", ()=>getTrendingMovies);
-parcelHelpers.export(exports, "searchMovies", ()=>searchMovies);
+parcelHelpers.export(exports, "searchMoviesGenre", ()=>searchMoviesGenre);
 const trendingArray = [];
 const searchArray = [];
 const watchlistArray = [];
@@ -627,18 +627,17 @@ const getTrendingMovies = async function() {
         data.forEach((item)=>{
             trendingArray.push(item);
         });
-        console.log(trendingArray);
         return data;
     } catch (error) {
         console.log(error);
     }
 };
-const searchMovies = async function(query) {
+const searchMoviesGenre = async function(query) {
     try {
         const response = await fetch(`/.netlify/functions/fetch-movie?with_genres=${query}`);
         const movies = await response.json();
-        console.log(movies.results);
-        return movies.results;
+        const data = movies.results;
+        return data;
     } catch (error) {
         console.log(error);
     }
@@ -726,6 +725,14 @@ const firstLetterCapitalize = function(word) {
     const remaining = word.slice(1);
     return `${firstLetter}${remaining}`;
 };
+const convertKey2Title = function(id) {
+    for (const [key, value] of Object.entries(genreID))if (id === value) {
+        if (key.includes("_")) {
+            const split = key.split("_");
+            return split.map((word)=>firstLetterCapitalize(word)).join(" ");
+        } else return firstLetterCapitalize(key);
+    }
+};
 const viewHome = function(data) {
     const featuredTitle = document.querySelector(".featured__title");
     const featuredDate = document.querySelector(".featured__date");
@@ -748,6 +755,12 @@ const viewHome = function(data) {
     featuredGenre.textContent = genre;
     featuredOverview.textContent = randomSelectedMovie.overview;
 };
+const navLogo = document.getElementById("nav-logo");
+const navHome = document.getElementById("nav-home");
+//IMPORTANT - You left off here - IMPORTANT !!!!!!!!!!!!!!!!!!!!
+//BROKEN - make some sort of handler to get the api data to the viewHome callback function
+navLogo.addEventListener("click", viewHome);
+navHome.addEventListener("click", viewHome);
 const populateSlider = function(data) {
     const slider = document.querySelector(".swiper-wrapper");
     const imgPath = "https://image.tmdb.org/t/p/original";
@@ -824,14 +837,16 @@ hamburgerMenu.addEventListener("click", function() {
     hamburgerMenu.classList.toggle("active");
     mobileMenu.classList.toggle("active");
 });
-const renderGenre = function(result) {
+const renderGenre = async function(result, query) {
     const main = document.querySelector(".main");
     const imgPath = "https://image.tmdb.org/t/p/original";
-    // create elemts to display the movie results and attach  to main
     const container = document.createElement("div");
     container.classList.add("container");
-    const movieGrid = document.createElement("div");
-    movieGrid.classList.add("grid");
+    container.classList.add("grid");
+    const genreTitle = document.createElement("h2");
+    genreTitle.classList.add("movie-grid__title");
+    genreTitle.textContent = convertKey2Title(query);
+    container.appendChild(genreTitle);
     result.forEach((movie)=>{
         const movieGridItem = document.createElement("div");
         movieGridItem.classList.add("movie-grid__item");
@@ -839,19 +854,21 @@ const renderGenre = function(result) {
         movieGridIMG.classList.add("movie-grid__img");
         movieGridIMG.src = `${imgPath}${movie.poster_path}`;
         movieGridItem.appendChild(movieGridIMG);
-        movieGrid.appendChild(movieGridItem);
-        container.appendChild(movieGrid);
+        container.appendChild(movieGridItem);
     });
     main.innerHTML = "";
     main.appendChild(container);
 };
-const dropdownLink = document.querySelectorAll(".dropdown__link");
 const genreHandler = function(handler) {
+    const dropdownLink = document.querySelectorAll(".dropdown__link");
     dropdownLink.forEach((link)=>{
         link.addEventListener("click", function(e) {
             const query = e.target.dataset.genre;
-            console.log(query, genreID[query]);
             handler(genreID[query]);
+            const dropDown = e.target.closest("[data-dropdown]");
+            const caret = document.querySelector(".fa-caret-down");
+            dropDown.classList.remove("active");
+            caret.classList.remove("fa-caret-down__rotate");
         });
     });
 };

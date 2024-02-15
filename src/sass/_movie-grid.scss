@@ -1,0 +1,12 @@
+.movie-grid {
+  &__img {
+    width: 24rem;
+  }
+
+  &__title {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 3.2rem;
+    padding: 4rem;
+  }
+}

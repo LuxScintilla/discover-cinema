@@ -62,6 +62,8 @@ body {
 .grid {
   grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
   gap: 2rem;
+  width: 100%;
+  display: grid;
 }
 
 .nav {
@@ -403,6 +405,17 @@ body {
 .mobile-menu__hamburger.active span:nth-child(3) {
   top: 50%;
   transform: translate(-50%, -50%)rotate(-45deg);
+}
+
+.movie-grid__img {
+  width: 24rem;
+}
+
+.movie-grid__title {
+  text-align: center;
+  grid-column: 1 / -1;
+  padding: 4rem;
+  font-size: 3.2rem;
 }
 
 /*# sourceMappingURL=index.f7626f62.css.map */
