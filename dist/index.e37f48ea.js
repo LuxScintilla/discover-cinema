@@ -585,19 +585,24 @@ var _viewJs = require("./view.js");
 const loadInitial = async function() {
     try {
         const data = await _modelJs.getTrendingMovies();
-        _viewJs.viewHome(data);
-        _viewJs.populateSlider(data);
+        _viewJs.renderHome(data);
+    // view.populateSlider(data);
     } catch (error) {
         console.log(error);
     }
 };
 const loadGenre = async function(query) {
-    const result = await _modelJs.searchMoviesGenre(query);
-    _viewJs.renderGenre(result, query);
+    try {
+        const result = await _modelJs.searchMoviesGenre(query);
+        _viewJs.renderGenre(result, query);
+    } catch (error) {
+        console.log(error);
+    }
 };
 const init = function() {
     loadInitial();
     _viewJs.genreHandler(loadGenre);
+    _viewJs.homeHandler(loadInitial);
 };
 init();
 
@@ -677,8 +682,8 @@ exports.export = function(dest, destName, get) {
 // --------- DROPDOWN MENU ---------
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "viewHome", ()=>viewHome);
-parcelHelpers.export(exports, "populateSlider", ()=>populateSlider);
+parcelHelpers.export(exports, "renderHome", ()=>renderHome);
+parcelHelpers.export(exports, "homeHandler", ()=>homeHandler);
 parcelHelpers.export(exports, "renderGenre", ()=>renderGenre);
 parcelHelpers.export(exports, "genreHandler", ()=>genreHandler);
 document.addEventListener("click", (e)=>{
@@ -733,11 +738,7 @@ const convertKey2Title = function(id) {
         } else return firstLetterCapitalize(key);
     }
 };
-const viewHome = function(data) {
-    const featuredTitle = document.querySelector(".featured__title");
-    const featuredDate = document.querySelector(".featured__date");
-    const featuredGenre = document.querySelector(".featured__genre");
-    const featuredOverview = document.querySelector(".featured__overview");
+const renderHome = function(data) {
     const random = Math.floor(Math.random() * 20);
     const randomSelectedMovie = data[random];
     const imgPath = "https://image.tmdb.org/t/p/original";
@@ -750,21 +751,66 @@ const viewHome = function(data) {
         }
     }).join(", ");
     document.body.style.backgroundImage = `linear-gradient(to bottom right, rgba(13, 16, 24, 0.8), rgba(0, 0, 0, 0.9)), url(${imgPath}${randomSelectedMovie.backdrop_path})`;
+    // CREATE FEATURED MOVIE ELEMENTS ----------------
+    const container = document.createElement("div");
+    container.classList.add("container");
+    const featured = document.createElement("section");
+    featured.classList.add("featured");
+    const featuredTitle = document.createElement("h1");
+    featuredTitle.classList.add("featured__title");
     featuredTitle.textContent = randomSelectedMovie.title;
+    const featuredInfo = document.createElement("div");
+    featuredInfo.classList.add("featured__info");
+    const featuredDate = document.createElement("h2");
+    featuredDate.classList.add("featured__date");
     featuredDate.textContent = randomSelectedMovie.release_date.slice(0, 4);
+    const featuredGenre = document.createElement("h2");
+    featuredGenre.classList.add("featured__genre");
     featuredGenre.textContent = genre;
+    const featuredOverview = document.createElement("p");
+    featuredOverview.classList.add("featured__overview");
     featuredOverview.textContent = randomSelectedMovie.overview;
+    const featuredWatch = document.createElement("button");
+    featuredWatch.classList.add("featured__watch");
+    featuredWatch.textContent = "Watch";
+    const featuredList = document.createElement("button");
+    featuredList.classList.add("featured__list");
+    featuredList.textContent = "My List";
+    // CREATE SWIPER ELEMENTS ----------------
+    const swiper = document.createElement("div");
+    swiper.classList.add("swiper");
+    const swiperWrapper = document.createElement("div");
+    swiperWrapper.classList.add("swiper-wrapper");
+    const swiperPrev = document.createElement("div");
+    swiperPrev.classList.add("swiper-button-prev");
+    const swiperNext = document.createElement("div");
+    swiperNext.classList.add("swiper-button-next");
+    // ATTACH ELEMENTS ----------------
+    main.innerHTML = "";
+    featuredInfo.appendChild(featuredDate);
+    featuredInfo.appendChild(featuredGenre);
+    featured.appendChild(featuredTitle);
+    featured.appendChild(featuredInfo);
+    featured.appendChild(featuredOverview);
+    featured.appendChild(featuredWatch);
+    featured.appendChild(featuredList);
+    container.appendChild(featured);
+    swiper.appendChild(swiperWrapper);
+    swiper.appendChild(swiperPrev);
+    swiper.appendChild(swiperNext);
+    container.appendChild(swiper);
+    main.appendChild(container);
+    populateSlider(data, swiperWrapper);
 };
 const navLogo = document.getElementById("nav-logo");
 const navHome = document.getElementById("nav-home");
-//IMPORTANT - You left off here - IMPORTANT !!!!!!!!!!!!!!!!!!!!
-//BROKEN - make some sort of handler to get the api data to the viewHome callback function
-navLogo.addEventListener("click", viewHome);
-navHome.addEventListener("click", viewHome);
-const populateSlider = function(data) {
-    const slider = document.querySelector(".swiper-wrapper");
+const homeHandler = function(handler) {
+    navLogo.addEventListener("click", handler);
+    navHome.addEventListener("click", handler);
+};
+// --------- HOME PAGE SLIDER ---------
+const populateSlider = function(data, container) {
     const imgPath = "https://image.tmdb.org/t/p/original";
-    slider.innerHTML = "";
     data.forEach((movie)=>{
         const newDIV = document.createElement("div");
         newDIV.classList.add("swiper-slide");
@@ -773,7 +819,7 @@ const populateSlider = function(data) {
         newImg.dataset.title = movie.original_title;
         newImg.src = `${imgPath}${movie.poster_path}`;
         newDIV.appendChild(newImg);
-        slider.appendChild(newDIV);
+        container.appendChild(newDIV);
     });
     // SWIPER ------------------------------
     const swiper = new Swiper(".swiper", {
@@ -863,7 +909,8 @@ const genreHandler = function(handler) {
     const dropdownLink = document.querySelectorAll(".dropdown__link");
     dropdownLink.forEach((link)=>{
         link.addEventListener("click", function(e) {
-            const query = e.target.dataset.genre;
+            let query = e.target.dataset.genre;
+            if (query.includes(" ")) query = query.split(" ").join("_");
             handler(genreID[query]);
             const dropDown = e.target.closest("[data-dropdown]");
             const caret = document.querySelector(".fa-caret-down");
