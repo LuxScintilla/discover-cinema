@@ -125,7 +125,7 @@ export const renderHome = function (data) {
 
   const featuredList = document.createElement("button");
   featuredList.classList.add("featured__list");
-  featuredList.textContent = "My List";
+  featuredList.textContent = "Add to List";
 
   // CREATE SWIPER ELEMENTS ----------------
   const swiper = document.createElement("div");
@@ -184,7 +184,22 @@ const populateSlider = function (data, container) {
     newImg.dataset.title = movie.original_title;
     newImg.src = `${imgPath}${movie.poster_path}`;
 
+    const newWatchButton = document.createElement("button");
+    newWatchButton.classList.add("swiper-watch-button");
+    newWatchButton.textContent = "Watch";
+    newWatchButton.addEventListener("click", function () {
+      clickedTitle = this.previousSibling.dataset.title;
+      console.log(clickedTitle);
+    });
+
+    const newListButton = document.createElement("button");
+    newListButton.classList.add("swiper-list-button");
+    newListButton.textContent = "Add to List";
+
     newDIV.appendChild(newImg);
+    newDIV.appendChild(newWatchButton);
+    newDIV.appendChild(newListButton);
+
     container.appendChild(newDIV);
   });
 
@@ -309,4 +324,20 @@ export const genreHandler = function (handler) {
       caret.classList.remove("fa-caret-down__rotate");
     });
   });
+};
+
+// --------- WATCH DOM RENDER ---------
+
+let clickedTitle;
+
+export const watchHandler = function (handler) {
+  document.addEventListener("click", function (e) {
+    if (e.target.matches(".swiper-watch-button")) {
+      handler(clickedTitle);
+    }
+  });
+};
+
+export const renderWatch = function (result, query) {
+  console.log(result, query);
 };

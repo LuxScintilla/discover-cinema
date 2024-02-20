@@ -28,6 +28,20 @@ export const getTrendingMovies = async function () {
   }
 };
 
+export const searchMovies = async function (query) {
+  try {
+    const response = await fetch(
+      `/.netlify/functions/fetch-movie?query=${query}`
+    );
+    const movies = await response.json();
+    const data = movies.results;
+
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const searchMoviesGenre = async function (query) {
   try {
     const response = await fetch(

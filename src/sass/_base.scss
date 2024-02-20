@@ -28,13 +28,14 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  background-attachment: fixed;
   font-family: sans-serif;
   font-size: 1.4rem;
   color: $color-text-light;
 }
 
 .main {
-  height: 100%;
+  height: calc(100lvh - 56px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,6 +47,7 @@ body {
 }
 
 .container {
+  height: 100%;
   max-width: calc(100% - 10vw);
   margin: 0 auto;
 }

@@ -7,7 +7,6 @@ const loadInitial = async function () {
   try {
     const data = await model.getTrendingMovies();
     view.renderHome(data);
-    // view.populateSlider(data);
   } catch (error) {
     console.log(error);
   }
@@ -22,10 +21,20 @@ const loadGenre = async function (query) {
   }
 };
 
+const loadWatch = async function (query) {
+  try {
+    const result = await model.searchMovies(query);
+    view.renderWatch(result, query);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const init = function () {
   loadInitial();
   view.genreHandler(loadGenre);
   view.homeHandler(loadInitial);
+  view.watchHandler(loadWatch);
 };
 
 init();

@@ -1,9 +1,58 @@
 .swiper {
   width: 100%;
 
+  &-slide {
+    overflow: hidden;
+  }
+
+  &-slide:hover &-watch-button,
+  &-slide:hover &-list-button {
+    visibility: visible;
+    transform: translateY(0);
+  }
+
   &-img {
+    position: relative;
     max-height: 32rem;
+  }
+
+  &-watch-button,
+  &-list-button {
+    position: absolute;
+    all: unset;
+    padding: 1rem 2rem;
+    border-radius: 4px;
+
+    visibility: hidden;
+    transform: translateY(6rem);
+  }
+
+  &-watch-button {
+    bottom: 1rem;
+    left: 1rem;
+    background-color: $color-accent;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:active,
+    &:hover {
+      background-color: $color-accent-hover;
+      box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  &-list-button {
+    bottom: 1rem;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:active,
+    &:hover {
+      background-color: #000;
+      box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.4);
+    }
   }
 
   &-button-prev,

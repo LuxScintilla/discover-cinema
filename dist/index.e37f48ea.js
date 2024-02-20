@@ -586,7 +586,6 @@ const loadInitial = async function() {
     try {
         const data = await _modelJs.getTrendingMovies();
         _viewJs.renderHome(data);
-    // view.populateSlider(data);
     } catch (error) {
         console.log(error);
     }
@@ -599,10 +598,19 @@ const loadGenre = async function(query) {
         console.log(error);
     }
 };
+const loadWatch = async function(query) {
+    try {
+        const result = await _modelJs.searchMovies(query);
+        _viewJs.renderWatch(result, query);
+    } catch (error) {
+        console.log(error);
+    }
+};
 const init = function() {
     loadInitial();
     _viewJs.genreHandler(loadGenre);
     _viewJs.homeHandler(loadInitial);
+    _viewJs.watchHandler(loadWatch);
 };
 init();
 
@@ -620,6 +628,7 @@ parcelHelpers.export(exports, "trendingArray", ()=>trendingArray);
 parcelHelpers.export(exports, "searchArray", ()=>searchArray);
 parcelHelpers.export(exports, "watchlistArray", ()=>watchlistArray);
 parcelHelpers.export(exports, "getTrendingMovies", ()=>getTrendingMovies);
+parcelHelpers.export(exports, "searchMovies", ()=>searchMovies);
 parcelHelpers.export(exports, "searchMoviesGenre", ()=>searchMoviesGenre);
 const trendingArray = [];
 const searchArray = [];
@@ -632,6 +641,16 @@ const getTrendingMovies = async function() {
         data.forEach((item)=>{
             trendingArray.push(item);
         });
+        return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+const searchMovies = async function(query) {
+    try {
+        const response = await fetch(`/.netlify/functions/fetch-movie?query=${query}`);
+        const movies = await response.json();
+        const data = movies.results;
         return data;
     } catch (error) {
         console.log(error);
@@ -686,6 +705,8 @@ parcelHelpers.export(exports, "renderHome", ()=>renderHome);
 parcelHelpers.export(exports, "homeHandler", ()=>homeHandler);
 parcelHelpers.export(exports, "renderGenre", ()=>renderGenre);
 parcelHelpers.export(exports, "genreHandler", ()=>genreHandler);
+parcelHelpers.export(exports, "watchHandler", ()=>watchHandler);
+parcelHelpers.export(exports, "renderWatch", ()=>renderWatch);
 document.addEventListener("click", (e)=>{
     const isDropdownButton = e.target.matches("[data-dropdown-button]");
     const caret = document.querySelector(".fa-caret-down");
@@ -775,7 +796,7 @@ const renderHome = function(data) {
     featuredWatch.textContent = "Watch";
     const featuredList = document.createElement("button");
     featuredList.classList.add("featured__list");
-    featuredList.textContent = "My List";
+    featuredList.textContent = "Add to List";
     // CREATE SWIPER ELEMENTS ----------------
     const swiper = document.createElement("div");
     swiper.classList.add("swiper");
@@ -818,7 +839,19 @@ const populateSlider = function(data, container) {
         newImg.classList.add("swiper-img");
         newImg.dataset.title = movie.original_title;
         newImg.src = `${imgPath}${movie.poster_path}`;
+        const newWatchButton = document.createElement("button");
+        newWatchButton.classList.add("swiper-watch-button");
+        newWatchButton.textContent = "Watch";
+        newWatchButton.addEventListener("click", function() {
+            clickedTitle = this.previousSibling.dataset.title;
+            console.log(clickedTitle);
+        });
+        const newListButton = document.createElement("button");
+        newListButton.classList.add("swiper-list-button");
+        newListButton.textContent = "Add to List";
         newDIV.appendChild(newImg);
+        newDIV.appendChild(newWatchButton);
+        newDIV.appendChild(newListButton);
         container.appendChild(newDIV);
     });
     // SWIPER ------------------------------
@@ -918,6 +951,16 @@ const genreHandler = function(handler) {
             caret.classList.remove("fa-caret-down__rotate");
         });
     });
+};
+// --------- WATCH DOM RENDER ---------
+let clickedTitle;
+const watchHandler = function(handler) {
+    document.addEventListener("click", function(e) {
+        if (e.target.matches(".swiper-watch-button")) handler(clickedTitle);
+    });
+};
+const renderWatch = function(result, query) {
+    console.log(result, query);
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f0HGD","aenu9"], "aenu9", "parcelRequireeee6")
