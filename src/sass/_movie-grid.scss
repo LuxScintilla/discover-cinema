@@ -1,6 +1,58 @@
 .movie-grid {
-  &__img {
+  &__item {
+    position: relative;
+    overflow: hidden;
+    height: 36rem;
     width: 24rem;
+  }
+
+  &__item:hover &__watch-button,
+  &__item:hover &__list-button {
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  &__img {
+    height: 100%;
+  }
+
+  &__watch-button,
+  &__list-button {
+    position: absolute;
+    all: unset;
+    padding: 1rem 2rem;
+    border-radius: 4px;
+
+    visibility: hidden;
+    transform: translateY(6rem);
+  }
+
+  &__watch-button {
+    bottom: 1rem;
+    left: 1rem;
+    background-color: $color-accent;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:active,
+    &:hover {
+      background-color: $color-accent-hover;
+      box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  &__list-button {
+    bottom: 1rem;
+    right: 1rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:active,
+    &:hover {
+      background-color: #000;
+      box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.4);
+    }
   }
 
   &__title {

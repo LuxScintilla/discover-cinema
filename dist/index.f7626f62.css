@@ -28,7 +28,6 @@ body {
   flex-direction: column;
   justify-content: center;
   height: calc(100lvh - 56px);
-  padding: 2rem 0;
   display: flex;
 }
 
@@ -453,8 +452,55 @@ body {
   transform: translate(-50%, -50%)rotate(-45deg);
 }
 
-.movie-grid__img {
+.movie-grid__item {
   width: 24rem;
+  height: 36rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.movie-grid__item:hover .movie-grid__watch-button, .movie-grid__item:hover .movie-grid__list-button {
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.movie-grid__img {
+  height: 100%;
+}
+
+.movie-grid__watch-button, .movie-grid__list-button {
+  all: unset;
+  visibility: hidden;
+  border-radius: 4px;
+  padding: 1rem 2rem;
+  position: absolute;
+  transform: translateY(6rem);
+}
+
+.movie-grid__watch-button {
+  cursor: pointer;
+  background-color: #e02d00;
+  transition: all .2s ease-in-out;
+  bottom: 1rem;
+  left: 1rem;
+}
+
+.movie-grid__watch-button:active, .movie-grid__watch-button:hover {
+  background-color: #ff582e;
+  box-shadow: 0 0 8px 4px #0006;
+}
+
+.movie-grid__list-button {
+  cursor: pointer;
+  background-color: #0009;
+  transition: all .2s ease-in-out;
+  bottom: 1rem;
+  right: 1rem;
+}
+
+.movie-grid__list-button:active, .movie-grid__list-button:hover {
+  background-color: #000;
+  box-shadow: 0 0 8px 4px #0006;
 }
 
 .movie-grid__title {

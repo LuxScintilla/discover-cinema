@@ -296,10 +296,26 @@ export const renderGenre = async function (result, query) {
     movieGridItem.classList.add("movie-grid__item");
 
     const movieGridIMG = document.createElement("img");
+    movieGridIMG.dataset.title = movie.original_title;
     movieGridIMG.classList.add("movie-grid__img");
     movieGridIMG.src = `${imgPath}${movie.poster_path}`;
 
+    const newWatchButton = document.createElement("button");
+    newWatchButton.classList.add("movie-grid__watch-button");
+    newWatchButton.textContent = "Watch";
+    newWatchButton.addEventListener("click", function () {
+      clickedTitle = this.previousSibling.dataset.title;
+      console.log(clickedTitle);
+    });
+
+    const newListButton = document.createElement("button");
+    newListButton.classList.add("movie-grid__list-button");
+    newListButton.textContent = "Add to List";
+
     movieGridItem.appendChild(movieGridIMG);
+    movieGridItem.appendChild(newWatchButton);
+    movieGridItem.appendChild(newListButton);
+
     container.appendChild(movieGridItem);
   });
   main.innerHTML = "";
@@ -332,7 +348,10 @@ let clickedTitle;
 
 export const watchHandler = function (handler) {
   document.addEventListener("click", function (e) {
-    if (e.target.matches(".swiper-watch-button")) {
+    if (
+      e.target.matches(".swiper-watch-button") ||
+      e.target.matches(".movie-grid__watch-button")
+    ) {
       handler(clickedTitle);
     }
   });
