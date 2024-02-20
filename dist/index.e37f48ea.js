@@ -622,6 +622,8 @@ init();
 //   console.log(response.json())
 // );
 // https://api.themoviedb.org/3/discover/movie?api_key=###&with_genres=28
+//by id
+//https://api.themoviedb.org/3/movie/343611?api_key=###
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "trendingArray", ()=>trendingArray);
@@ -759,11 +761,8 @@ const convertKey2Title = function(id) {
         } else return firstLetterCapitalize(key);
     }
 };
-const renderHome = function(data) {
-    const random = Math.floor(Math.random() * 20);
-    const randomSelectedMovie = data[random];
-    const imgPath = "https://image.tmdb.org/t/p/original";
-    const genre = randomSelectedMovie.genre_ids.map((id)=>{
+const generateGenre = function(data) {
+    return data.genre_ids.map((id)=>{
         for (const [key, value] of Object.entries(genreID))if (id === value) {
             if (key.includes("_")) {
                 const split = key.split("_");
@@ -771,6 +770,12 @@ const renderHome = function(data) {
             } else return firstLetterCapitalize(key);
         }
     }).join(", ");
+};
+const renderHome = function(data) {
+    const random = Math.floor(Math.random() * 20);
+    const randomSelectedMovie = data[random];
+    const imgPath = "https://image.tmdb.org/t/p/original";
+    const genre = generateGenre(randomSelectedMovie);
     document.body.style.backgroundImage = `linear-gradient(to bottom right, rgba(13, 16, 24, 0.8), rgba(0, 0, 0, 0.9)), url(${imgPath}${randomSelectedMovie.backdrop_path})`;
     // CREATE FEATURED MOVIE ELEMENTS ----------------
     const container = document.createElement("div");
@@ -838,13 +843,14 @@ const populateSlider = function(data, container) {
         const newImg = document.createElement("img");
         newImg.classList.add("swiper-img");
         newImg.dataset.title = movie.original_title;
+        newImg.dataset.movie_id = movie.id;
         newImg.src = `${imgPath}${movie.poster_path}`;
         const newWatchButton = document.createElement("button");
         newWatchButton.classList.add("swiper-watch-button");
         newWatchButton.textContent = "Watch";
         newWatchButton.addEventListener("click", function() {
             clickedTitle = this.previousSibling.dataset.title;
-            console.log(clickedTitle);
+            clickedID = this.previousSibling.dataset.movie_id;
         });
         const newListButton = document.createElement("button");
         newListButton.classList.add("swiper-list-button");
@@ -931,6 +937,7 @@ const renderGenre = async function(result, query) {
         movieGridItem.classList.add("movie-grid__item");
         const movieGridIMG = document.createElement("img");
         movieGridIMG.dataset.title = movie.original_title;
+        movieGridIMG.dataset.movie_id = movie.id;
         movieGridIMG.classList.add("movie-grid__img");
         movieGridIMG.src = `${imgPath}${movie.poster_path}`;
         const newWatchButton = document.createElement("button");
@@ -938,7 +945,8 @@ const renderGenre = async function(result, query) {
         newWatchButton.textContent = "Watch";
         newWatchButton.addEventListener("click", function() {
             clickedTitle = this.previousSibling.dataset.title;
-            console.log(clickedTitle);
+            clickedID = this.previousSibling.dataset.movie_id;
+            console.log(clickedTitle, clickedID);
         });
         const newListButton = document.createElement("button");
         newListButton.classList.add("movie-grid__list-button");
@@ -967,13 +975,33 @@ const genreHandler = function(handler) {
 };
 // --------- WATCH DOM RENDER ---------
 let clickedTitle;
+let clickedID;
 const watchHandler = function(handler) {
     document.addEventListener("click", function(e) {
         if (e.target.matches(".swiper-watch-button") || e.target.matches(".movie-grid__watch-button")) handler(clickedTitle);
     });
 };
 const renderWatch = function(result, query) {
-    console.log(result, query);
+    const data = result.filter((movie)=>{
+        if (movie.id === Number(clickedID)) return movie;
+    })[0];
+    const genre = generateGenre(data);
+    const imgPath = "https://image.tmdb.org/t/p/original";
+    document.body.style.backgroundImage = `linear-gradient(to bottom right, rgba(13, 16, 24, 0.8), rgba(0, 0, 0, 0.9)), url(${imgPath}${data.backdrop_path})`;
+    const featuredTitle = document.querySelector(".featured__title");
+    const featuredInfo = document.querySelector(".featured__info");
+    const featuredDate = document.querySelector(".featured__date");
+    const featuredGenre = document.querySelector(".featured__genre");
+    const featuredOverview = document.querySelector(".featured__overview");
+    const featuredWatch = document.querySelector(".featured__watch");
+    const featuredList = document.querySelector(".featured__list");
+    featuredTitle.textContent = data.title;
+    featuredInfo.classList.add("featured__info");
+    featuredDate.textContent = data.release_date.slice(0, 4);
+    featuredGenre.textContent = genre;
+    featuredOverview.textContent = data.overview;
+    featuredWatch.textContent = "Watch";
+    featuredList.textContent = "Add to List";
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f0HGD","aenu9"], "aenu9", "parcelRequireeee6")

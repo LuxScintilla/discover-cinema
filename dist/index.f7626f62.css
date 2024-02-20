@@ -243,6 +243,9 @@ body {
 }
 
 .swiper-slide {
+  width: 24rem;
+  height: 36rem;
+  position: relative;
   overflow: hidden;
 }
 
@@ -252,15 +255,15 @@ body {
 }
 
 .swiper-img {
-  max-height: 32rem;
-  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 .swiper-watch-button, .swiper-list-button {
   all: unset;
   visibility: hidden;
   border-radius: 4px;
-  padding: 1rem 2rem;
+  padding: .4rem .8rem;
   position: absolute;
   transform: translateY(6rem);
 }
@@ -283,7 +286,7 @@ body {
   background-color: #0009;
   transition: all .2s ease-in-out;
   bottom: 1rem;
-  right: 0;
+  right: 1rem;
 }
 
 .swiper-list-button:active, .swiper-list-button:hover {

@@ -8,6 +8,9 @@
 
 // https://api.themoviedb.org/3/discover/movie?api_key=###&with_genres=28
 
+//by id
+//https://api.themoviedb.org/3/movie/343611?api_key=###
+
 export const trendingArray = [];
 export const searchArray = [];
 export const watchlistArray = [];

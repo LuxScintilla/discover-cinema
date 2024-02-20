@@ -2,7 +2,10 @@
   width: 100%;
 
   &-slide {
+    position: relative;
     overflow: hidden;
+    height: 36rem;
+    width: 24rem;
   }
 
   &-slide:hover &-watch-button,
@@ -12,15 +15,15 @@
   }
 
   &-img {
-    position: relative;
-    max-height: 32rem;
+    height: 100%;
+    width: 100%;
   }
 
   &-watch-button,
   &-list-button {
     position: absolute;
     all: unset;
-    padding: 1rem 2rem;
+    padding: 0.4rem 0.8rem;
     border-radius: 4px;
 
     visibility: hidden;
@@ -43,7 +46,7 @@
 
   &-list-button {
     bottom: 1rem;
-    right: 0;
+    right: 1rem;
     background-color: rgba(0, 0, 0, 0.6);
     cursor: pointer;
     transition: all 0.2s ease-in-out;

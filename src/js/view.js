@@ -69,14 +69,8 @@ const convertKey2Title = function (id) {
   }
 };
 
-// --------- HOME PAGE ---------
-
-export const renderHome = function (data) {
-  const random = Math.floor(Math.random() * 20);
-  const randomSelectedMovie = data[random];
-  const imgPath = "https://image.tmdb.org/t/p/original";
-
-  const genre = randomSelectedMovie.genre_ids
+const generateGenre = function (data) {
+  return data.genre_ids
     .map((id) => {
       for (const [key, value] of Object.entries(genreID)) {
         if (id === value) {
@@ -90,6 +84,16 @@ export const renderHome = function (data) {
       }
     })
     .join(", ");
+};
+
+// --------- HOME PAGE ---------
+
+export const renderHome = function (data) {
+  const random = Math.floor(Math.random() * 20);
+  const randomSelectedMovie = data[random];
+  const imgPath = "https://image.tmdb.org/t/p/original";
+
+  const genre = generateGenre(randomSelectedMovie);
 
   document.body.style.backgroundImage = `linear-gradient(to bottom right, rgba(13, 16, 24, 0.8), rgba(0, 0, 0, 0.9)), url(${imgPath}${randomSelectedMovie.backdrop_path})`;
 
@@ -182,6 +186,7 @@ const populateSlider = function (data, container) {
     const newImg = document.createElement("img");
     newImg.classList.add("swiper-img");
     newImg.dataset.title = movie.original_title;
+    newImg.dataset.movie_id = movie.id;
     newImg.src = `${imgPath}${movie.poster_path}`;
 
     const newWatchButton = document.createElement("button");
@@ -189,7 +194,7 @@ const populateSlider = function (data, container) {
     newWatchButton.textContent = "Watch";
     newWatchButton.addEventListener("click", function () {
       clickedTitle = this.previousSibling.dataset.title;
-      console.log(clickedTitle);
+      clickedID = this.previousSibling.dataset.movie_id;
     });
 
     const newListButton = document.createElement("button");
@@ -297,6 +302,7 @@ export const renderGenre = async function (result, query) {
 
     const movieGridIMG = document.createElement("img");
     movieGridIMG.dataset.title = movie.original_title;
+    movieGridIMG.dataset.movie_id = movie.id;
     movieGridIMG.classList.add("movie-grid__img");
     movieGridIMG.src = `${imgPath}${movie.poster_path}`;
 
@@ -305,7 +311,8 @@ export const renderGenre = async function (result, query) {
     newWatchButton.textContent = "Watch";
     newWatchButton.addEventListener("click", function () {
       clickedTitle = this.previousSibling.dataset.title;
-      console.log(clickedTitle);
+      clickedID = this.previousSibling.dataset.movie_id;
+      console.log(clickedTitle, clickedID);
     });
 
     const newListButton = document.createElement("button");
@@ -345,6 +352,7 @@ export const genreHandler = function (handler) {
 // --------- WATCH DOM RENDER ---------
 
 let clickedTitle;
+let clickedID;
 
 export const watchHandler = function (handler) {
   document.addEventListener("click", function (e) {
@@ -358,5 +366,31 @@ export const watchHandler = function (handler) {
 };
 
 export const renderWatch = function (result, query) {
-  console.log(result, query);
+  const data = result.filter((movie) => {
+    if (movie.id === Number(clickedID)) {
+      return movie;
+    }
+  })[0];
+
+  const genre = generateGenre(data);
+
+  const imgPath = "https://image.tmdb.org/t/p/original";
+
+  document.body.style.backgroundImage = `linear-gradient(to bottom right, rgba(13, 16, 24, 0.8), rgba(0, 0, 0, 0.9)), url(${imgPath}${data.backdrop_path})`;
+
+  const featuredTitle = document.querySelector(".featured__title");
+  const featuredInfo = document.querySelector(".featured__info");
+  const featuredDate = document.querySelector(".featured__date");
+  const featuredGenre = document.querySelector(".featured__genre");
+  const featuredOverview = document.querySelector(".featured__overview");
+  const featuredWatch = document.querySelector(".featured__watch");
+  const featuredList = document.querySelector(".featured__list");
+
+  featuredTitle.textContent = data.title;
+  featuredInfo.classList.add("featured__info");
+  featuredDate.textContent = data.release_date.slice(0, 4);
+  featuredGenre.textContent = genre;
+  featuredOverview.textContent = data.overview;
+  featuredWatch.textContent = "Watch";
+  featuredList.textContent = "Add to List";
 };
