@@ -390,6 +390,41 @@ export const renderWatch = function (result, query) {
   featuredDate.textContent = data.release_date.slice(0, 4);
   featuredGenre.textContent = genre;
   featuredOverview.textContent = data.overview;
-  featuredWatch.textContent = "Watch";
+  featuredWatch.textContent = "Start";
   featuredList.textContent = "Add to List";
+};
+
+// --------- SEARCH DOM RENDER ---------
+
+const searchInput = document.querySelector(".nav__input");
+const searchButton = document.querySelector(".nav__search-btn");
+
+export const searchHandler = function (handler) {
+  const invalidChars = ["{", "}", "<", ">", "[", "]", ";", "|"];
+
+  searchInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      if (!searchInput.value.split("").some((i) => invalidChars.includes(i))) {
+        handler(searchInput.value);
+        searchInput.value = "";
+      } else {
+        searchInput.setCustomValidity("Invalid characters { } [ ] < > ; |");
+        searchInput.reportValidity();
+      }
+    }
+  });
+
+  searchButton.addEventListener("click", function () {
+    if (!searchInput.value.split("").some((i) => invalidChars.includes(i))) {
+      handler(searchInput.value);
+      searchInput.value = "";
+    } else {
+      searchInput.setCustomValidity("Invalid characters { } [ ] < > ; |");
+      searchInput.reportValidity();
+    }
+  });
+};
+
+export const renderSearch = function (result, query) {
+  renderGenre(result, query);
 };

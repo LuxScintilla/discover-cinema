@@ -37,11 +37,21 @@ const loadWatch = async function (query) {
   }
 };
 
+const loadSearch = async function (query) {
+  try {
+    const result = await model.searchMovies(query);
+    view.renderSearch(result, query);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const init = function () {
   loadInitial();
   view.genreHandler(loadGenre);
   view.homeHandler(loadInitial);
   view.watchHandler(loadWatch);
+  view.searchHandler(loadSearch);
 };
 
 init();

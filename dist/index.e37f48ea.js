@@ -611,11 +611,20 @@ const loadWatch = async function(query) {
         console.log(error);
     }
 };
+const loadSearch = async function(query) {
+    try {
+        const result = await _modelJs.searchMovies(query);
+        _viewJs.renderSearch(result, query);
+    } catch (error) {
+        console.log(error);
+    }
+};
 const init = function() {
     loadInitial();
     _viewJs.genreHandler(loadGenre);
     _viewJs.homeHandler(loadInitial);
     _viewJs.watchHandler(loadWatch);
+    _viewJs.searchHandler(loadSearch);
 };
 init();
 
@@ -714,6 +723,8 @@ parcelHelpers.export(exports, "renderGenre", ()=>renderGenre);
 parcelHelpers.export(exports, "genreHandler", ()=>genreHandler);
 parcelHelpers.export(exports, "watchHandler", ()=>watchHandler);
 parcelHelpers.export(exports, "renderWatch", ()=>renderWatch);
+parcelHelpers.export(exports, "searchHandler", ()=>searchHandler);
+parcelHelpers.export(exports, "renderSearch", ()=>renderSearch);
 document.addEventListener("click", (e)=>{
     const isDropdownButton = e.target.matches("[data-dropdown-button]");
     const caret = document.querySelector(".fa-caret-down");
@@ -1004,8 +1015,46 @@ const renderWatch = function(result, query) {
     featuredDate.textContent = data.release_date.slice(0, 4);
     featuredGenre.textContent = genre;
     featuredOverview.textContent = data.overview;
-    featuredWatch.textContent = "Watch";
+    featuredWatch.textContent = "Start";
     featuredList.textContent = "Add to List";
+};
+// --------- SEARCH DOM RENDER ---------
+const searchInput = document.querySelector(".nav__input");
+const searchButton = document.querySelector(".nav__search-btn");
+const searchHandler = function(handler) {
+    const invalidChars = [
+        "{",
+        "}",
+        "<",
+        ">",
+        "[",
+        "]",
+        ";",
+        "|"
+    ];
+    searchInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            if (!searchInput.value.split("").some((i)=>invalidChars.includes(i))) {
+                handler(searchInput.value);
+                searchInput.value = "";
+            } else {
+                searchInput.setCustomValidity("Invalid characters { } [ ] < > ; |");
+                searchInput.reportValidity();
+            }
+        }
+    });
+    searchButton.addEventListener("click", function() {
+        if (!searchInput.value.split("").some((i)=>invalidChars.includes(i))) {
+            handler(searchInput.value);
+            searchInput.value = "";
+        } else {
+            searchInput.setCustomValidity("Invalid characters { } [ ] < > ; |");
+            searchInput.reportValidity();
+        }
+    });
+};
+const renderSearch = function(result, query) {
+    renderGenre(result, query);
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f0HGD","aenu9"], "aenu9", "parcelRequireeee6")
