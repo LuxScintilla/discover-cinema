@@ -27,7 +27,8 @@ body {
 .main {
   flex-direction: column;
   justify-content: center;
-  height: calc(100lvh - 56px);
+  height: calc(100% - 114px);
+  padding: 10rem 0;
   display: flex;
 }
 
@@ -65,6 +66,23 @@ body {
   gap: 2rem;
   width: 100%;
   display: grid;
+}
+
+.footer {
+  justify-content: center;
+  align-items: center;
+  height: 5.8rem;
+  display: flex;
+}
+
+.footer__link {
+  max-width: 24rem;
+  display: block;
+}
+
+.footer__img {
+  width: 24rem;
+  height: auto;
 }
 
 .nav {

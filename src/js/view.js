@@ -312,7 +312,6 @@ export const renderGenre = async function (result, query) {
     newWatchButton.addEventListener("click", function () {
       clickedTitle = this.previousSibling.dataset.title;
       clickedID = this.previousSibling.dataset.movie_id;
-      console.log(clickedTitle, clickedID);
     });
 
     const newListButton = document.createElement("button");

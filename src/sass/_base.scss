@@ -35,10 +35,11 @@ body {
 }
 
 .main {
-  height: calc(100lvh - 56px);
+  height: calc(100% - 56px - 58px);
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 10rem 0;
 }
 
 .main.active {
@@ -74,4 +75,21 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
   gap: 2rem;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5.8rem;
+
+  &__link {
+    display: block;
+    max-width: 24rem;
+  }
+
+  &__img {
+    width: 24rem;
+    height: auto;
+  }
 }

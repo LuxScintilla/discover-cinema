@@ -24,7 +24,14 @@ const loadGenre = async function (query) {
 const loadWatch = async function (query) {
   try {
     const result = await model.searchMovies(query);
-    view.renderWatch(result, query);
+
+    if (document.querySelector(".featured")) {
+      view.renderWatch(result, query);
+    } else {
+      const data = await model.getTrendingMovies();
+      view.renderHome(data);
+      view.renderWatch(result, query);
+    }
   } catch (error) {
     console.log(error);
   }

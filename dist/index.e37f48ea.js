@@ -601,7 +601,12 @@ const loadGenre = async function(query) {
 const loadWatch = async function(query) {
     try {
         const result = await _modelJs.searchMovies(query);
-        _viewJs.renderWatch(result, query);
+        if (document.querySelector(".featured")) _viewJs.renderWatch(result, query);
+        else {
+            const data = await _modelJs.getTrendingMovies();
+            _viewJs.renderHome(data);
+            _viewJs.renderWatch(result, query);
+        }
     } catch (error) {
         console.log(error);
     }
@@ -946,7 +951,6 @@ const renderGenre = async function(result, query) {
         newWatchButton.addEventListener("click", function() {
             clickedTitle = this.previousSibling.dataset.title;
             clickedID = this.previousSibling.dataset.movie_id;
-            console.log(clickedTitle, clickedID);
         });
         const newListButton = document.createElement("button");
         newListButton.classList.add("movie-grid__list-button");
