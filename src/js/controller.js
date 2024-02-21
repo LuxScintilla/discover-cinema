@@ -46,12 +46,17 @@ const loadSearch = async function (query) {
   }
 };
 
+const pass2LocalStorage = function (query, id) {
+  model.saveLocalStorage(query, id);
+};
+
 const init = function () {
   loadInitial();
   view.genreHandler(loadGenre);
   view.homeHandler(loadInitial);
   view.watchHandler(loadWatch);
   view.searchHandler(loadSearch);
+  view.localStorageHandler(pass2LocalStorage);
 };
 
 init();

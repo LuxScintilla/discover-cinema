@@ -86,6 +86,20 @@ const generateGenre = function (data) {
     .join(", ");
 };
 
+// --------- LOCAL STORAGE HANDLER ---------
+
+export const localStorageHandler = function (handler) {
+  document.addEventListener("click", function (e) {
+    if (
+      e.target.matches(".featured__list") ||
+      e.target.matches(".swiper-list-button") ||
+      e.target.matches(".movie-grid__list-button")
+    ) {
+      handler(clickedTitle, clickedID);
+    }
+  });
+};
+
 // --------- HOME PAGE ---------
 
 export const renderHome = function (data) {
@@ -121,15 +135,22 @@ export const renderHome = function (data) {
 
   const featuredOverview = document.createElement("p");
   featuredOverview.classList.add("featured__overview");
+  featuredOverview.dataset.title = randomSelectedMovie.title;
+  featuredOverview.dataset.movie_id = randomSelectedMovie.id;
   featuredOverview.textContent = randomSelectedMovie.overview;
 
   const featuredWatch = document.createElement("button");
   featuredWatch.classList.add("featured__watch");
-  featuredWatch.textContent = "Watch";
+  featuredWatch.textContent = "Start";
 
   const featuredList = document.createElement("button");
   featuredList.classList.add("featured__list");
   featuredList.textContent = "Add to List";
+  featuredList.addEventListener("click", function () {
+    clickedTitle = this.previousSibling.previousSibling.dataset.title;
+    clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+    console.log(clickedTitle, clickedID);
+  });
 
   // CREATE SWIPER ELEMENTS ----------------
   const swiper = document.createElement("div");
@@ -200,6 +221,11 @@ const populateSlider = function (data, container) {
     const newListButton = document.createElement("button");
     newListButton.classList.add("swiper-list-button");
     newListButton.textContent = "Add to List";
+    newListButton.addEventListener("click", function () {
+      clickedTitle = this.previousSibling.previousSibling.dataset.title;
+      clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+      console.log(clickedTitle, clickedID);
+    });
 
     newDIV.appendChild(newImg);
     newDIV.appendChild(newWatchButton);
@@ -317,6 +343,11 @@ export const renderGenre = async function (result, query) {
     const newListButton = document.createElement("button");
     newListButton.classList.add("movie-grid__list-button");
     newListButton.textContent = "Add to List";
+    newListButton.addEventListener("click", function () {
+      clickedTitle = this.previousSibling.previousSibling.dataset.title;
+      clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+      console.log(clickedTitle, clickedID);
+    });
 
     movieGridItem.appendChild(movieGridIMG);
     movieGridItem.appendChild(newWatchButton);
@@ -385,6 +416,9 @@ export const renderWatch = function (result, query) {
   const featuredWatch = document.querySelector(".featured__watch");
   const featuredList = document.querySelector(".featured__list");
 
+  featuredOverview.dataset.title = data.title;
+  featuredOverview.dataset.movie_id = data.id;
+
   featuredTitle.textContent = data.title;
   featuredInfo.classList.add("featured__info");
   featuredDate.textContent = data.release_date.slice(0, 4);
@@ -427,4 +461,87 @@ export const searchHandler = function (handler) {
 
 export const renderSearch = function (result, query) {
   renderGenre(result, query);
+  const genreTitle = document.querySelector(".movie-grid__title");
+  genreTitle.textContent = `Your search results for: ${query}`;
 };
+
+// --------- WATCHLIST DOM RENDER ---------
+
+const watchListRender = function () {
+  const main = document.querySelector(".main");
+
+  const moviesArray = localStorage.getItem("watchList")
+    ? JSON.parse(localStorage.getItem("watchList"))
+    : [];
+
+  if (moviesArray.length === 0) {
+    const errorMessage = document.createElement("h1");
+    errorMessage.classList.add("watchlist__error");
+    errorMessage.textContent = "Your watchlist is empty";
+
+    main.innerHTML = "";
+    main.appendChild(errorMessage);
+  } else {
+    const main = document.querySelector(".main");
+    const imgPath = "https://image.tmdb.org/t/p/original";
+
+    const container = document.createElement("div");
+    container.classList.add("container");
+    container.classList.add("grid");
+
+    const genreTitle = document.createElement("h2");
+    genreTitle.classList.add("movie-grid__title");
+    genreTitle.textContent = "Your Watchlist";
+
+    container.appendChild(genreTitle);
+
+    moviesArray.forEach((movie) => {
+      const movieGridItem = document.createElement("div");
+      movieGridItem.classList.add("movie-grid__item");
+
+      const movieGridIMG = document.createElement("img");
+      movieGridIMG.dataset.title = movie.original_title;
+      movieGridIMG.dataset.movie_id = movie.id;
+      movieGridIMG.classList.add("movie-grid__img");
+      movieGridIMG.src = `${imgPath}${movie.poster_path}`;
+
+      const newWatchButton = document.createElement("button");
+      newWatchButton.classList.add("movie-grid__watch-button");
+      newWatchButton.textContent = "Watch";
+      newWatchButton.addEventListener("click", function () {
+        clickedTitle = this.previousSibling.dataset.title;
+        clickedID = this.previousSibling.dataset.movie_id;
+      });
+
+      const newListButton = document.createElement("button");
+      newListButton.classList.add("movie-grid__list-button");
+      newListButton.textContent = "Add to List";
+      newListButton.addEventListener("click", function () {
+        clickedTitle = this.previousSibling.previousSibling.dataset.title;
+        clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+        console.log(clickedTitle, clickedID);
+      });
+
+      const newDeleteButton = document.createElement("button");
+      newDeleteButton.classList.add("movie-grid__delete-button");
+      newDeleteButton.dataset.movie_id = movie.id;
+      newDeleteButton.textContent = "Delete";
+      newDeleteButton.addEventListener("click", function () {
+        // YOU LEFT OFF HERE -- MAKE HANDLER TO UPDATE
+        // LOCAL STORAGE AFTER DELETING MOVIE !!!
+      });
+
+      movieGridItem.appendChild(movieGridIMG);
+      movieGridItem.appendChild(newWatchButton);
+      movieGridItem.appendChild(newListButton);
+      movieGridItem.appendChild(newDeleteButton);
+
+      container.appendChild(movieGridItem);
+    });
+    main.innerHTML = "";
+    main.appendChild(container);
+  }
+};
+
+const watchListButton = document.getElementById("nav-watchlist");
+watchListButton.addEventListener("click", watchListRender);

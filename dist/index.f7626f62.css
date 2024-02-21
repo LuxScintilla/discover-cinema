@@ -104,6 +104,11 @@ body {
   text-decoration: none;
 }
 
+.nav__logo-img {
+  max-width: 16rem;
+  height: auto;
+}
+
 .nav__link {
   all: unset;
   color: #fff;
@@ -520,6 +525,23 @@ body {
 }
 
 .movie-grid__list-button:active, .movie-grid__list-button:hover {
+  background-color: #000;
+  box-shadow: 0 0 8px 4px #0006;
+}
+
+.movie-grid__delete-button {
+  all: unset;
+  cursor: pointer;
+  background-color: #0009;
+  border-radius: 4px;
+  padding: 1rem 2rem;
+  transition: all .2s ease-in-out;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.movie-grid__delete-button:active, .movie-grid__delete-button:hover {
   background-color: #000;
   box-shadow: 0 0 8px 4px #0006;
 }

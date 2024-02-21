@@ -619,12 +619,16 @@ const loadSearch = async function(query) {
         console.log(error);
     }
 };
+const pass2LocalStorage = function(query, id) {
+    _modelJs.saveLocalStorage(query, id);
+};
 const init = function() {
     loadInitial();
     _viewJs.genreHandler(loadGenre);
     _viewJs.homeHandler(loadInitial);
     _viewJs.watchHandler(loadWatch);
     _viewJs.searchHandler(loadSearch);
+    _viewJs.localStorageHandler(pass2LocalStorage);
 };
 init();
 
@@ -642,13 +646,13 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "trendingArray", ()=>trendingArray);
 parcelHelpers.export(exports, "searchArray", ()=>searchArray);
-parcelHelpers.export(exports, "watchlistArray", ()=>watchlistArray);
 parcelHelpers.export(exports, "getTrendingMovies", ()=>getTrendingMovies);
 parcelHelpers.export(exports, "searchMovies", ()=>searchMovies);
 parcelHelpers.export(exports, "searchMoviesGenre", ()=>searchMoviesGenre);
+parcelHelpers.export(exports, "saveLocalStorage", ()=>saveLocalStorage);
 const trendingArray = [];
 const searchArray = [];
-const watchlistArray = [];
+const watchListArray = localStorage.getItem("watchList") ? JSON.parse(localStorage.getItem("watchList")) : [];
 const getTrendingMovies = async function() {
     try {
         const response = await fetch(`/.netlify/functions/fetch-movie`);
@@ -678,6 +682,21 @@ const searchMoviesGenre = async function(query) {
         const movies = await response.json();
         const data = movies.results;
         return data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+const saveLocalStorage = async function(query, id) {
+    try {
+        const response = await fetch(`/.netlify/functions/fetch-movie?query=${query}`);
+        const movies = await response.json();
+        const data = movies.results;
+        data.forEach((movie)=>{
+            if (movie.id === Number(id)) {
+                watchListArray.push(movie);
+                localStorage.setItem("watchList", JSON.stringify(watchListArray));
+            }
+        });
     } catch (error) {
         console.log(error);
     }
@@ -717,6 +736,7 @@ exports.export = function(dest, destName, get) {
 // --------- DROPDOWN MENU ---------
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "localStorageHandler", ()=>localStorageHandler);
 parcelHelpers.export(exports, "renderHome", ()=>renderHome);
 parcelHelpers.export(exports, "homeHandler", ()=>homeHandler);
 parcelHelpers.export(exports, "renderGenre", ()=>renderGenre);
@@ -787,6 +807,11 @@ const generateGenre = function(data) {
         }
     }).join(", ");
 };
+const localStorageHandler = function(handler) {
+    document.addEventListener("click", function(e) {
+        if (e.target.matches(".featured__list") || e.target.matches(".swiper-list-button") || e.target.matches(".movie-grid__list-button")) handler(clickedTitle, clickedID);
+    });
+};
 const renderHome = function(data) {
     const random = Math.floor(Math.random() * 20);
     const randomSelectedMovie = data[random];
@@ -811,13 +836,20 @@ const renderHome = function(data) {
     featuredGenre.textContent = genre;
     const featuredOverview = document.createElement("p");
     featuredOverview.classList.add("featured__overview");
+    featuredOverview.dataset.title = randomSelectedMovie.title;
+    featuredOverview.dataset.movie_id = randomSelectedMovie.id;
     featuredOverview.textContent = randomSelectedMovie.overview;
     const featuredWatch = document.createElement("button");
     featuredWatch.classList.add("featured__watch");
-    featuredWatch.textContent = "Watch";
+    featuredWatch.textContent = "Start";
     const featuredList = document.createElement("button");
     featuredList.classList.add("featured__list");
     featuredList.textContent = "Add to List";
+    featuredList.addEventListener("click", function() {
+        clickedTitle = this.previousSibling.previousSibling.dataset.title;
+        clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+        console.log(clickedTitle, clickedID);
+    });
     // CREATE SWIPER ELEMENTS ----------------
     const swiper = document.createElement("div");
     swiper.classList.add("swiper");
@@ -871,6 +903,11 @@ const populateSlider = function(data, container) {
         const newListButton = document.createElement("button");
         newListButton.classList.add("swiper-list-button");
         newListButton.textContent = "Add to List";
+        newListButton.addEventListener("click", function() {
+            clickedTitle = this.previousSibling.previousSibling.dataset.title;
+            clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+            console.log(clickedTitle, clickedID);
+        });
         newDIV.appendChild(newImg);
         newDIV.appendChild(newWatchButton);
         newDIV.appendChild(newListButton);
@@ -966,6 +1003,11 @@ const renderGenre = async function(result, query) {
         const newListButton = document.createElement("button");
         newListButton.classList.add("movie-grid__list-button");
         newListButton.textContent = "Add to List";
+        newListButton.addEventListener("click", function() {
+            clickedTitle = this.previousSibling.previousSibling.dataset.title;
+            clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+            console.log(clickedTitle, clickedID);
+        });
         movieGridItem.appendChild(movieGridIMG);
         movieGridItem.appendChild(newWatchButton);
         movieGridItem.appendChild(newListButton);
@@ -1010,6 +1052,8 @@ const renderWatch = function(result, query) {
     const featuredOverview = document.querySelector(".featured__overview");
     const featuredWatch = document.querySelector(".featured__watch");
     const featuredList = document.querySelector(".featured__list");
+    featuredOverview.dataset.title = data.title;
+    featuredOverview.dataset.movie_id = data.id;
     featuredTitle.textContent = data.title;
     featuredInfo.classList.add("featured__info");
     featuredDate.textContent = data.release_date.slice(0, 4);
@@ -1055,7 +1099,72 @@ const searchHandler = function(handler) {
 };
 const renderSearch = function(result, query) {
     renderGenre(result, query);
+    const genreTitle = document.querySelector(".movie-grid__title");
+    genreTitle.textContent = `Your search results for: ${query}`;
 };
+// --------- WATCHLIST DOM RENDER ---------
+const watchListRender = function() {
+    const main = document.querySelector(".main");
+    const moviesArray = localStorage.getItem("watchList") ? JSON.parse(localStorage.getItem("watchList")) : [];
+    if (moviesArray.length === 0) {
+        const errorMessage = document.createElement("h1");
+        errorMessage.classList.add("watchlist__error");
+        errorMessage.textContent = "Your watchlist is empty";
+        main.innerHTML = "";
+        main.appendChild(errorMessage);
+    } else {
+        const main = document.querySelector(".main");
+        const imgPath = "https://image.tmdb.org/t/p/original";
+        const container = document.createElement("div");
+        container.classList.add("container");
+        container.classList.add("grid");
+        const genreTitle = document.createElement("h2");
+        genreTitle.classList.add("movie-grid__title");
+        genreTitle.textContent = "Your Watchlist";
+        container.appendChild(genreTitle);
+        moviesArray.forEach((movie)=>{
+            const movieGridItem = document.createElement("div");
+            movieGridItem.classList.add("movie-grid__item");
+            const movieGridIMG = document.createElement("img");
+            movieGridIMG.dataset.title = movie.original_title;
+            movieGridIMG.dataset.movie_id = movie.id;
+            movieGridIMG.classList.add("movie-grid__img");
+            movieGridIMG.src = `${imgPath}${movie.poster_path}`;
+            const newWatchButton = document.createElement("button");
+            newWatchButton.classList.add("movie-grid__watch-button");
+            newWatchButton.textContent = "Watch";
+            newWatchButton.addEventListener("click", function() {
+                clickedTitle = this.previousSibling.dataset.title;
+                clickedID = this.previousSibling.dataset.movie_id;
+            });
+            const newListButton = document.createElement("button");
+            newListButton.classList.add("movie-grid__list-button");
+            newListButton.textContent = "Add to List";
+            newListButton.addEventListener("click", function() {
+                clickedTitle = this.previousSibling.previousSibling.dataset.title;
+                clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+                console.log(clickedTitle, clickedID);
+            });
+            const newDeleteButton = document.createElement("button");
+            newDeleteButton.classList.add("movie-grid__delete-button");
+            newDeleteButton.dataset.movie_id = movie.id;
+            newDeleteButton.textContent = "Delete";
+            newDeleteButton.addEventListener("click", function() {
+            // YOU LEFT OFF HERE -- MAKE HANDLER TO UPDATE
+            // LOCAL STORAGE AFTER DELETING MOVIE !!!
+            });
+            movieGridItem.appendChild(movieGridIMG);
+            movieGridItem.appendChild(newWatchButton);
+            movieGridItem.appendChild(newListButton);
+            movieGridItem.appendChild(newDeleteButton);
+            container.appendChild(movieGridItem);
+        });
+        main.innerHTML = "";
+        main.appendChild(container);
+    }
+};
+const watchListButton = document.getElementById("nav-watchlist");
+watchListButton.addEventListener("click", watchListRender);
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f0HGD","aenu9"], "aenu9", "parcelRequireeee6")
 
