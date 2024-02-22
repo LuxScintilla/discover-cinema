@@ -50,6 +50,11 @@ const pass2LocalStorage = function (query, id) {
   model.saveLocalStorage(query, id);
 };
 
+const deleteFromLocalStorage = function (id) {
+  model.deleteLocalStorageItem(id);
+  view.watchListRender();
+};
+
 const init = function () {
   loadInitial();
   view.genreHandler(loadGenre);
@@ -57,6 +62,7 @@ const init = function () {
   view.watchHandler(loadWatch);
   view.searchHandler(loadSearch);
   view.localStorageHandler(pass2LocalStorage);
+  view.deleteButtonHandler(deleteFromLocalStorage);
 };
 
 init();

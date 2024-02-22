@@ -71,12 +71,39 @@ export const saveLocalStorage = async function (query, id) {
     const data = movies.results;
 
     data.forEach((movie) => {
-      if (movie.id === Number(id)) {
-        watchListArray.push(movie);
-        localStorage.setItem("watchList", JSON.stringify(watchListArray));
+      const watchList = localStorage.getItem("watchList")
+        ? JSON.parse(localStorage.getItem("watchList"))
+        : [];
+
+      if (watchList.length === 0) {
+        watchList.push(movie);
+        localStorage.setItem("watchList", JSON.stringify(watchList));
+      } else if (movie.id === Number(id)) {
+        const duplicateCheck = watchListArray.some(
+          (listItem) => listItem.id === movie.id
+        );
+
+        if (duplicateCheck === false) {
+          watchList.push(movie);
+          localStorage.setItem("watchList", JSON.stringify(watchList));
+        } else {
+          console.log("Movie is already in your watchlist");
+        }
       }
     });
   } catch (error) {
     console.log(error);
   }
+};
+
+export const deleteLocalStorageItem = function (id) {
+  const watchList = localStorage.getItem("watchList")
+    ? JSON.parse(localStorage.getItem("watchList"))
+    : [];
+  const filteredArray = watchList.filter((movie) => {
+    if (movie.id !== Number(id)) {
+      return movie;
+    }
+  });
+  localStorage.setItem("watchList", JSON.stringify(filteredArray));
 };

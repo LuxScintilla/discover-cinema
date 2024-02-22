@@ -622,6 +622,10 @@ const loadSearch = async function(query) {
 const pass2LocalStorage = function(query, id) {
     _modelJs.saveLocalStorage(query, id);
 };
+const deleteFromLocalStorage = function(id) {
+    _modelJs.deleteLocalStorageItem(id);
+    _viewJs.watchListRender();
+};
 const init = function() {
     loadInitial();
     _viewJs.genreHandler(loadGenre);
@@ -629,6 +633,7 @@ const init = function() {
     _viewJs.watchHandler(loadWatch);
     _viewJs.searchHandler(loadSearch);
     _viewJs.localStorageHandler(pass2LocalStorage);
+    _viewJs.deleteButtonHandler(deleteFromLocalStorage);
 };
 init();
 
@@ -650,6 +655,7 @@ parcelHelpers.export(exports, "getTrendingMovies", ()=>getTrendingMovies);
 parcelHelpers.export(exports, "searchMovies", ()=>searchMovies);
 parcelHelpers.export(exports, "searchMoviesGenre", ()=>searchMoviesGenre);
 parcelHelpers.export(exports, "saveLocalStorage", ()=>saveLocalStorage);
+parcelHelpers.export(exports, "deleteLocalStorageItem", ()=>deleteLocalStorageItem);
 const trendingArray = [];
 const searchArray = [];
 const watchListArray = localStorage.getItem("watchList") ? JSON.parse(localStorage.getItem("watchList")) : [];
@@ -692,14 +698,28 @@ const saveLocalStorage = async function(query, id) {
         const movies = await response.json();
         const data = movies.results;
         data.forEach((movie)=>{
-            if (movie.id === Number(id)) {
-                watchListArray.push(movie);
-                localStorage.setItem("watchList", JSON.stringify(watchListArray));
+            const watchList = localStorage.getItem("watchList") ? JSON.parse(localStorage.getItem("watchList")) : [];
+            if (watchList.length === 0) {
+                watchList.push(movie);
+                localStorage.setItem("watchList", JSON.stringify(watchList));
+            } else if (movie.id === Number(id)) {
+                const duplicateCheck = watchListArray.some((listItem)=>listItem.id === movie.id);
+                if (duplicateCheck === false) {
+                    watchList.push(movie);
+                    localStorage.setItem("watchList", JSON.stringify(watchList));
+                } else console.log("Movie is already in your watchlist");
             }
         });
     } catch (error) {
         console.log(error);
     }
+};
+const deleteLocalStorageItem = function(id) {
+    const watchList = localStorage.getItem("watchList") ? JSON.parse(localStorage.getItem("watchList")) : [];
+    const filteredArray = watchList.filter((movie)=>{
+        if (movie.id !== Number(id)) return movie;
+    });
+    localStorage.setItem("watchList", JSON.stringify(filteredArray));
 };
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
@@ -745,6 +765,8 @@ parcelHelpers.export(exports, "watchHandler", ()=>watchHandler);
 parcelHelpers.export(exports, "renderWatch", ()=>renderWatch);
 parcelHelpers.export(exports, "searchHandler", ()=>searchHandler);
 parcelHelpers.export(exports, "renderSearch", ()=>renderSearch);
+parcelHelpers.export(exports, "deleteButtonHandler", ()=>deleteButtonHandler);
+parcelHelpers.export(exports, "watchListRender", ()=>watchListRender);
 document.addEventListener("click", (e)=>{
     const isDropdownButton = e.target.matches("[data-dropdown-button]");
     const caret = document.querySelector(".fa-caret-down");
@@ -906,7 +928,6 @@ const populateSlider = function(data, container) {
         newListButton.addEventListener("click", function() {
             clickedTitle = this.previousSibling.previousSibling.dataset.title;
             clickedID = this.previousSibling.previousSibling.dataset.movie_id;
-            console.log(clickedTitle, clickedID);
         });
         newDIV.appendChild(newImg);
         newDIV.appendChild(newWatchButton);
@@ -1006,7 +1027,6 @@ const renderGenre = async function(result, query) {
         newListButton.addEventListener("click", function() {
             clickedTitle = this.previousSibling.previousSibling.dataset.title;
             clickedID = this.previousSibling.previousSibling.dataset.movie_id;
-            console.log(clickedTitle, clickedID);
         });
         movieGridItem.appendChild(movieGridIMG);
         movieGridItem.appendChild(newWatchButton);
@@ -1102,7 +1122,11 @@ const renderSearch = function(result, query) {
     const genreTitle = document.querySelector(".movie-grid__title");
     genreTitle.textContent = `Your search results for: ${query}`;
 };
-// --------- WATCHLIST DOM RENDER ---------
+const deleteButtonHandler = function(handler) {
+    document.addEventListener("click", function(e) {
+        if (e.target.matches(".movie-grid__delete-button")) handler(e.target.dataset.movie_id);
+    });
+};
 const watchListRender = function() {
     const main = document.querySelector(".main");
     const moviesArray = localStorage.getItem("watchList") ? JSON.parse(localStorage.getItem("watchList")) : [];
@@ -1149,10 +1173,6 @@ const watchListRender = function() {
             newDeleteButton.classList.add("movie-grid__delete-button");
             newDeleteButton.dataset.movie_id = movie.id;
             newDeleteButton.textContent = "Delete";
-            newDeleteButton.addEventListener("click", function() {
-            // YOU LEFT OFF HERE -- MAKE HANDLER TO UPDATE
-            // LOCAL STORAGE AFTER DELETING MOVIE !!!
-            });
             movieGridItem.appendChild(movieGridIMG);
             movieGridItem.appendChild(newWatchButton);
             movieGridItem.appendChild(newListButton);

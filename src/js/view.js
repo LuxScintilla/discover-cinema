@@ -224,7 +224,6 @@ const populateSlider = function (data, container) {
     newListButton.addEventListener("click", function () {
       clickedTitle = this.previousSibling.previousSibling.dataset.title;
       clickedID = this.previousSibling.previousSibling.dataset.movie_id;
-      console.log(clickedTitle, clickedID);
     });
 
     newDIV.appendChild(newImg);
@@ -346,7 +345,6 @@ export const renderGenre = async function (result, query) {
     newListButton.addEventListener("click", function () {
       clickedTitle = this.previousSibling.previousSibling.dataset.title;
       clickedID = this.previousSibling.previousSibling.dataset.movie_id;
-      console.log(clickedTitle, clickedID);
     });
 
     movieGridItem.appendChild(movieGridIMG);
@@ -467,7 +465,15 @@ export const renderSearch = function (result, query) {
 
 // --------- WATCHLIST DOM RENDER ---------
 
-const watchListRender = function () {
+export const deleteButtonHandler = function (handler) {
+  document.addEventListener("click", function (e) {
+    if (e.target.matches(".movie-grid__delete-button")) {
+      handler(e.target.dataset.movie_id);
+    }
+  });
+};
+
+export const watchListRender = function () {
   const main = document.querySelector(".main");
 
   const moviesArray = localStorage.getItem("watchList")
@@ -526,10 +532,6 @@ const watchListRender = function () {
       newDeleteButton.classList.add("movie-grid__delete-button");
       newDeleteButton.dataset.movie_id = movie.id;
       newDeleteButton.textContent = "Delete";
-      newDeleteButton.addEventListener("click", function () {
-        // YOU LEFT OFF HERE -- MAKE HANDLER TO UPDATE
-        // LOCAL STORAGE AFTER DELETING MOVIE !!!
-      });
 
       movieGridItem.appendChild(movieGridIMG);
       movieGridItem.appendChild(newWatchButton);

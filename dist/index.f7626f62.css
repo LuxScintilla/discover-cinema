@@ -24,6 +24,10 @@ body {
   font-size: 1.4rem;
 }
 
+.watchlist__error {
+  text-align: center;
+}
+
 .main {
   flex-direction: column;
   justify-content: center;

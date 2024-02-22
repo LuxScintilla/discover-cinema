@@ -34,6 +34,10 @@ body {
   color: $color-text-light;
 }
 
+.watchlist__error {
+  text-align: center;
+}
+
 .main {
   height: calc(100% - 56px - 58px);
   display: flex;
