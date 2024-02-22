@@ -64,6 +64,7 @@ const init = function () {
   view.localStorageHandler(pass2LocalStorage);
   view.deleteButtonHandler(deleteFromLocalStorage);
   view.mobileHomeHandler(loadInitial);
+  view.mobileGenreHandler(loadGenre);
 };
 
 init();

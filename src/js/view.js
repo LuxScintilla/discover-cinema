@@ -309,6 +309,7 @@ hamburgerMenu.addEventListener("click", function () {
 
 const mobileHome = document.getElementById("mobile-home");
 const mobileWatchList = document.getElementById("mobile-watchlist");
+const mobileGenreLink = document.querySelectorAll(".mobile-menu__genre-link");
 
 export const mobileHomeHandler = function (handler) {
   mobileHome.addEventListener("click", function () {
@@ -325,6 +326,24 @@ mobileWatchList.addEventListener("click", function () {
   hamburgerMenu.classList.toggle("active");
   mobileMenu.classList.toggle("active");
 });
+
+export const mobileGenreHandler = function (handler) {
+  mobileGenreLink.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      let query = e.target.dataset.genre;
+
+      if (query.includes(" ")) {
+        query = query.split(" ").join("_");
+      }
+
+      handler(genreID[query]);
+
+      main.classList.toggle("active");
+      hamburgerMenu.classList.toggle("active");
+      mobileMenu.classList.toggle("active");
+    });
+  });
+};
 
 // --------- GENRE DOM RENDER ---------
 
