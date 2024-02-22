@@ -89,6 +89,34 @@ body {
   height: auto;
 }
 
+.modal {
+  opacity: 0;
+  background-color: #0d1018;
+  border: 1px solid #e02d00;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  padding: 1rem 2rem;
+  transition: transform .5s ease-in-out, opacity .8s ease-in-out;
+  display: flex;
+  position: absolute;
+  top: 6rem;
+  right: 5vw;
+  transform: translateY(-10rem);
+}
+
+.modal__message {
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+.modal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .nav {
   display: flex;
 }

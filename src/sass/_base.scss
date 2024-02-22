@@ -97,3 +97,32 @@ body {
     height: auto;
   }
 }
+
+.modal {
+  position: absolute;
+  top: 6rem;
+  right: 5vw;
+
+  transform: translateY(-10rem);
+  opacity: 0;
+  transition: transform 0.5s ease-in-out, opacity 0.8s ease-in-out;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $color-background;
+  border-radius: 8px;
+  border: 1px solid $color-accent;
+  max-width: fit-content;
+  padding: 1rem 2rem;
+
+  &__message {
+    font-size: 1.6rem;
+    font-weight: 400;
+  }
+}
+
+.modal.active {
+  transform: translateY(0);
+  opacity: 1;
+}

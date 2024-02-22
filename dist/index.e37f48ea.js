@@ -619,8 +619,14 @@ const loadSearch = async function(query) {
         console.log(error);
     }
 };
-const pass2LocalStorage = function(query, id) {
-    _modelJs.saveLocalStorage(query, id);
+const pass2LocalStorage = async function(query, id) {
+    try {
+        await _modelJs.saveLocalStorage(query, id);
+        _viewJs.modalConfirmation("Movie has been added");
+    } catch (error) {
+        console.log(error.message);
+        _viewJs.modalConfirmation(error.message);
+    }
 };
 const deleteFromLocalStorage = function(id) {
     _modelJs.deleteLocalStorageItem(id);
@@ -699,21 +705,21 @@ const saveLocalStorage = async function(query, id) {
         const response = await fetch(`/.netlify/functions/fetch-movie?query=${query}`);
         const movies = await response.json();
         const data = movies.results;
+        const watchList = localStorage.getItem("watchList") ? JSON.parse(localStorage.getItem("watchList")) : [];
         data.forEach((movie)=>{
-            const watchList = localStorage.getItem("watchList") ? JSON.parse(localStorage.getItem("watchList")) : [];
-            if (watchList.length === 0) {
-                watchList.push(movie);
-                localStorage.setItem("watchList", JSON.stringify(watchList));
-            } else if (movie.id === Number(id)) {
-                const duplicateCheck = watchListArray.some((listItem)=>listItem.id === movie.id);
+            if (watchList.length === 0 || movie.id === Number(id)) {
+                const duplicateCheck = watchList.some((listItem)=>listItem.id === movie.id);
                 if (duplicateCheck === false) {
                     watchList.push(movie);
                     localStorage.setItem("watchList", JSON.stringify(watchList));
-                } else console.log("Movie is already in your watchlist");
+                } else {
+                    console.log("Movie is already in your watchlist");
+                    throw new Error("Movie is already in your watchlist");
+                }
             }
         });
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 };
 const deleteLocalStorageItem = function(id) {
@@ -758,6 +764,7 @@ exports.export = function(dest, destName, get) {
 // --------- DROPDOWN MENU ---------
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "modalConfirmation", ()=>modalConfirmation);
 parcelHelpers.export(exports, "localStorageHandler", ()=>localStorageHandler);
 parcelHelpers.export(exports, "renderHome", ()=>renderHome);
 parcelHelpers.export(exports, "homeHandler", ()=>homeHandler);
@@ -833,6 +840,15 @@ const generateGenre = function(data) {
         }
     }).join(", ");
 };
+const modalConfirmation = function(message) {
+    const modal = document.querySelector(".modal");
+    const modalMessage = document.querySelector(".modal__message");
+    modalMessage.textContent = message;
+    modal.classList.add("active");
+    setTimeout(()=>{
+        modal.classList.remove("active");
+    }, 3000);
+};
 const localStorageHandler = function(handler) {
     document.addEventListener("click", function(e) {
         if (e.target.matches(".featured__list") || e.target.matches(".swiper-list-button") || e.target.matches(".movie-grid__list-button")) handler(clickedTitle, clickedID);
@@ -874,7 +890,7 @@ const renderHome = function(data) {
     featuredList.addEventListener("click", function() {
         clickedTitle = this.previousSibling.previousSibling.dataset.title;
         clickedID = this.previousSibling.previousSibling.dataset.movie_id;
-        console.log(clickedTitle, clickedID);
+        modalConfirmation();
     });
     // CREATE SWIPER ELEMENTS ----------------
     const swiper = document.createElement("div");
@@ -932,6 +948,7 @@ const populateSlider = function(data, container) {
         newListButton.addEventListener("click", function() {
             clickedTitle = this.previousSibling.previousSibling.dataset.title;
             clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+        // modalConfirmation();
         });
         newDIV.appendChild(newImg);
         newDIV.appendChild(newWatchButton);
@@ -1061,6 +1078,7 @@ const renderGenre = async function(result, query) {
         newListButton.addEventListener("click", function() {
             clickedTitle = this.previousSibling.previousSibling.dataset.title;
             clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+        // modalConfirmation();
         });
         movieGridItem.appendChild(movieGridIMG);
         movieGridItem.appendChild(newWatchButton);
@@ -1229,7 +1247,7 @@ const watchListRender = function() {
             newListButton.addEventListener("click", function() {
                 clickedTitle = this.previousSibling.previousSibling.dataset.title;
                 clickedID = this.previousSibling.previousSibling.dataset.movie_id;
-                console.log(clickedTitle, clickedID);
+            // modalConfirmation();
             });
             const newDeleteButton = document.createElement("button");
             newDeleteButton.classList.add("movie-grid__delete-button");

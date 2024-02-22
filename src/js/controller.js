@@ -46,8 +46,14 @@ const loadSearch = async function (query) {
   }
 };
 
-const pass2LocalStorage = function (query, id) {
-  model.saveLocalStorage(query, id);
+const pass2LocalStorage = async function (query, id) {
+  try {
+    await model.saveLocalStorage(query, id);
+    view.modalConfirmation("Movie has been added");
+  } catch (error) {
+    console.log(error.message);
+    view.modalConfirmation(error.message);
+  }
 };
 
 const deleteFromLocalStorage = function (id) {

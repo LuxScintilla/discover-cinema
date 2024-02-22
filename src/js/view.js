@@ -86,6 +86,19 @@ const generateGenre = function (data) {
     .join(", ");
 };
 
+export const modalConfirmation = function (message) {
+  const modal = document.querySelector(".modal");
+  const modalMessage = document.querySelector(".modal__message");
+
+  modalMessage.textContent = message;
+
+  modal.classList.add("active");
+
+  setTimeout(() => {
+    modal.classList.remove("active");
+  }, 3000);
+};
+
 // --------- LOCAL STORAGE HANDLER ---------
 
 export const localStorageHandler = function (handler) {
@@ -149,7 +162,7 @@ export const renderHome = function (data) {
   featuredList.addEventListener("click", function () {
     clickedTitle = this.previousSibling.previousSibling.dataset.title;
     clickedID = this.previousSibling.previousSibling.dataset.movie_id;
-    console.log(clickedTitle, clickedID);
+    modalConfirmation();
   });
 
   // CREATE SWIPER ELEMENTS ----------------
@@ -224,6 +237,7 @@ const populateSlider = function (data, container) {
     newListButton.addEventListener("click", function () {
       clickedTitle = this.previousSibling.previousSibling.dataset.title;
       clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+      // modalConfirmation();
     });
 
     newDIV.appendChild(newImg);
@@ -385,6 +399,7 @@ export const renderGenre = async function (result, query) {
     newListButton.addEventListener("click", function () {
       clickedTitle = this.previousSibling.previousSibling.dataset.title;
       clickedID = this.previousSibling.previousSibling.dataset.movie_id;
+      // modalConfirmation();
     });
 
     movieGridItem.appendChild(movieGridIMG);
@@ -598,7 +613,7 @@ export const watchListRender = function () {
       newListButton.addEventListener("click", function () {
         clickedTitle = this.previousSibling.previousSibling.dataset.title;
         clickedID = this.previousSibling.previousSibling.dataset.movie_id;
-        console.log(clickedTitle, clickedID);
+        // modalConfirmation();
       });
 
       const newDeleteButton = document.createElement("button");
