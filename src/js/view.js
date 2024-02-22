@@ -305,6 +305,27 @@ hamburgerMenu.addEventListener("click", function () {
   mobileMenu.classList.toggle("active");
 });
 
+// --------- MOBILE MENU ---------
+
+const mobileHome = document.getElementById("mobile-home");
+const mobileWatchList = document.getElementById("mobile-watchlist");
+
+export const mobileHomeHandler = function (handler) {
+  mobileHome.addEventListener("click", function () {
+    handler();
+    main.classList.toggle("active");
+    hamburgerMenu.classList.toggle("active");
+    mobileMenu.classList.toggle("active");
+  });
+};
+
+mobileWatchList.addEventListener("click", function () {
+  watchListRender();
+  main.classList.toggle("active");
+  hamburgerMenu.classList.toggle("active");
+  mobileMenu.classList.toggle("active");
+});
+
 // --------- GENRE DOM RENDER ---------
 
 export const renderGenre = async function (result, query) {
@@ -431,6 +452,9 @@ export const renderWatch = function (result, query) {
 const searchInput = document.querySelector(".nav__input");
 const searchButton = document.querySelector(".nav__search-btn");
 
+const mobileInput = document.querySelector(".mobile-menu__input");
+const mobileSearchButton = document.querySelector(".mobile-menu__search-btn");
+
 export const searchHandler = function (handler) {
   const invalidChars = ["{", "}", "<", ">", "[", "]", ";", "|"];
 
@@ -446,6 +470,22 @@ export const searchHandler = function (handler) {
     }
   });
 
+  mobileInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      if (!mobileInput.value.split("").some((i) => invalidChars.includes(i))) {
+        handler(mobileInput.value);
+        mobileInput.value = "";
+
+        main.classList.toggle("active");
+        hamburgerMenu.classList.toggle("active");
+        mobileMenu.classList.toggle("active");
+      } else {
+        mobileInput.setCustomValidity("Invalid characters { } [ ] < > ; |");
+        mobileInput.reportValidity();
+      }
+    }
+  });
+
   searchButton.addEventListener("click", function () {
     if (!searchInput.value.split("").some((i) => invalidChars.includes(i))) {
       handler(searchInput.value);
@@ -453,6 +493,20 @@ export const searchHandler = function (handler) {
     } else {
       searchInput.setCustomValidity("Invalid characters { } [ ] < > ; |");
       searchInput.reportValidity();
+    }
+  });
+
+  mobileSearchButton.addEventListener("click", function () {
+    if (!mobileInput.value.split("").some((i) => invalidChars.includes(i))) {
+      handler(mobileInput.value);
+      mobileInput.value = "";
+
+      main.classList.toggle("active");
+      hamburgerMenu.classList.toggle("active");
+      mobileMenu.classList.toggle("active");
+    } else {
+      mobileInput.setCustomValidity("Invalid characters { } [ ] < > ; |");
+      mobileInput.reportValidity();
     }
   });
 };

@@ -63,6 +63,7 @@ const init = function () {
   view.searchHandler(loadSearch);
   view.localStorageHandler(pass2LocalStorage);
   view.deleteButtonHandler(deleteFromLocalStorage);
+  view.mobileHomeHandler(loadInitial);
 };
 
 init();

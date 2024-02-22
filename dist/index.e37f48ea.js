@@ -634,6 +634,7 @@ const init = function() {
     _viewJs.searchHandler(loadSearch);
     _viewJs.localStorageHandler(pass2LocalStorage);
     _viewJs.deleteButtonHandler(deleteFromLocalStorage);
+    _viewJs.mobileHomeHandler(loadInitial);
 };
 init();
 
@@ -759,6 +760,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "localStorageHandler", ()=>localStorageHandler);
 parcelHelpers.export(exports, "renderHome", ()=>renderHome);
 parcelHelpers.export(exports, "homeHandler", ()=>homeHandler);
+parcelHelpers.export(exports, "mobileHomeHandler", ()=>mobileHomeHandler);
 parcelHelpers.export(exports, "renderGenre", ()=>renderGenre);
 parcelHelpers.export(exports, "genreHandler", ()=>genreHandler);
 parcelHelpers.export(exports, "watchHandler", ()=>watchHandler);
@@ -996,6 +998,23 @@ hamburgerMenu.addEventListener("click", function() {
     hamburgerMenu.classList.toggle("active");
     mobileMenu.classList.toggle("active");
 });
+// --------- MOBILE MENU ---------
+const mobileHome = document.getElementById("mobile-home");
+const mobileWatchList = document.getElementById("mobile-watchlist");
+const mobileHomeHandler = function(handler) {
+    mobileHome.addEventListener("click", function() {
+        handler();
+        main.classList.toggle("active");
+        hamburgerMenu.classList.toggle("active");
+        mobileMenu.classList.toggle("active");
+    });
+};
+mobileWatchList.addEventListener("click", function() {
+    watchListRender();
+    main.classList.toggle("active");
+    hamburgerMenu.classList.toggle("active");
+    mobileMenu.classList.toggle("active");
+});
 const renderGenre = async function(result, query) {
     const main = document.querySelector(".main");
     const imgPath = "https://image.tmdb.org/t/p/original";
@@ -1085,6 +1104,8 @@ const renderWatch = function(result, query) {
 // --------- SEARCH DOM RENDER ---------
 const searchInput = document.querySelector(".nav__input");
 const searchButton = document.querySelector(".nav__search-btn");
+const mobileInput = document.querySelector(".mobile-menu__input");
+const mobileSearchButton = document.querySelector(".mobile-menu__search-btn");
 const searchHandler = function(handler) {
     const invalidChars = [
         "{",
@@ -1107,6 +1128,20 @@ const searchHandler = function(handler) {
             }
         }
     });
+    mobileInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            if (!mobileInput.value.split("").some((i)=>invalidChars.includes(i))) {
+                handler(mobileInput.value);
+                mobileInput.value = "";
+                main.classList.toggle("active");
+                hamburgerMenu.classList.toggle("active");
+                mobileMenu.classList.toggle("active");
+            } else {
+                mobileInput.setCustomValidity("Invalid characters { } [ ] < > ; |");
+                mobileInput.reportValidity();
+            }
+        }
+    });
     searchButton.addEventListener("click", function() {
         if (!searchInput.value.split("").some((i)=>invalidChars.includes(i))) {
             handler(searchInput.value);
@@ -1114,6 +1149,18 @@ const searchHandler = function(handler) {
         } else {
             searchInput.setCustomValidity("Invalid characters { } [ ] < > ; |");
             searchInput.reportValidity();
+        }
+    });
+    mobileSearchButton.addEventListener("click", function() {
+        if (!mobileInput.value.split("").some((i)=>invalidChars.includes(i))) {
+            handler(mobileInput.value);
+            mobileInput.value = "";
+            main.classList.toggle("active");
+            hamburgerMenu.classList.toggle("active");
+            mobileMenu.classList.toggle("active");
+        } else {
+            mobileInput.setCustomValidity("Invalid characters { } [ ] < > ; |");
+            mobileInput.reportValidity();
         }
     });
 };
