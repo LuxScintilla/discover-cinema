@@ -588,6 +588,7 @@ const loadInitial = async function() {
         _viewJs.renderHome(data);
     } catch (error) {
         console.log(error);
+        _viewJs.errorRender();
     }
 };
 const loadGenre = async function(query) {
@@ -596,6 +597,7 @@ const loadGenre = async function(query) {
         _viewJs.renderGenre(result, query);
     } catch (error) {
         console.log(error);
+        _viewJs.errorRender();
     }
 };
 const loadWatch = async function(query) {
@@ -609,6 +611,7 @@ const loadWatch = async function(query) {
         }
     } catch (error) {
         console.log(error);
+        _viewJs.errorRender();
     }
 };
 const loadSearch = async function(query) {
@@ -617,6 +620,7 @@ const loadSearch = async function(query) {
         _viewJs.renderSearch(result, query);
     } catch (error) {
         console.log(error);
+        _viewJs.errorRender();
     }
 };
 const pass2LocalStorage = async function(query, id) {
@@ -778,6 +782,7 @@ parcelHelpers.export(exports, "searchHandler", ()=>searchHandler);
 parcelHelpers.export(exports, "renderSearch", ()=>renderSearch);
 parcelHelpers.export(exports, "deleteButtonHandler", ()=>deleteButtonHandler);
 parcelHelpers.export(exports, "watchListRender", ()=>watchListRender);
+parcelHelpers.export(exports, "errorRender", ()=>errorRender);
 document.addEventListener("click", (e)=>{
     const isDropdownButton = e.target.matches("[data-dropdown-button]");
     const caret = document.querySelector(".fa-caret-down");
@@ -1265,6 +1270,14 @@ const watchListRender = function() {
 };
 const watchListButton = document.getElementById("nav-watchlist");
 watchListButton.addEventListener("click", watchListRender);
+const errorRender = function() {
+    const main = document.querySelector(".main");
+    const errorMessage = document.createElement("h1");
+    errorMessage.classList.add("watchlist__error");
+    errorMessage.textContent = "Something went wrong with your request";
+    main.innerHTML = "";
+    main.appendChild(errorMessage);
+};
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f0HGD","aenu9"], "aenu9", "parcelRequireeee6")
 

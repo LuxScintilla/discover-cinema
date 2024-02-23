@@ -635,3 +635,16 @@ export const watchListRender = function () {
 
 const watchListButton = document.getElementById("nav-watchlist");
 watchListButton.addEventListener("click", watchListRender);
+
+// --------- ERROR DOM RENDER ---------
+
+export const errorRender = function () {
+  const main = document.querySelector(".main");
+
+  const errorMessage = document.createElement("h1");
+  errorMessage.classList.add("watchlist__error");
+  errorMessage.textContent = "Something went wrong with your request";
+
+  main.innerHTML = "";
+  main.appendChild(errorMessage);
+};

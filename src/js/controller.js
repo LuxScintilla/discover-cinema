@@ -9,6 +9,7 @@ const loadInitial = async function () {
     view.renderHome(data);
   } catch (error) {
     console.log(error);
+    view.errorRender();
   }
 };
 
@@ -18,6 +19,7 @@ const loadGenre = async function (query) {
     view.renderGenre(result, query);
   } catch (error) {
     console.log(error);
+    view.errorRender();
   }
 };
 
@@ -34,6 +36,7 @@ const loadWatch = async function (query) {
     }
   } catch (error) {
     console.log(error);
+    view.errorRender();
   }
 };
 
@@ -43,6 +46,7 @@ const loadSearch = async function (query) {
     view.renderSearch(result, query);
   } catch (error) {
     console.log(error);
+    view.errorRender();
   }
 };
 
