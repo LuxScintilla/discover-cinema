@@ -1,6 +1,6 @@
 ![Header](./github-discover-cinema.jpg)
 
-# Calendar Planner
+# Discover Cinema
 
 ### Languages and Tools used in this project
 
