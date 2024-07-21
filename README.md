@@ -20,5 +20,5 @@
   For the slider I used a library called SwiperJS. 
   Precautions were used to make sure the API KEY is not leaked.
   The website is fully responsive. The accessibility features are still Work in Progress at the time of me updating the readme.
-  <a href="https://discover-cinema.netlify.app/#">Link to the live website.</a>
+  <a href="https://discover-cinema-ef.netlify.app/">Link to the live website.</a>
 </p>
